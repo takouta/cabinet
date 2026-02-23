@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Cas d'Utilisation - Cabinet Dentaire</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0f2f5;
+            color: #1a1c1e;
+        }
+
+        .main-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: white;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+
+        .diagram-container {
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 0 0 20px 20px;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .feature-badge {
+            background-color: #e7f1ff;
+            color: #0d6efd;
+            border-radius: 50px;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .actor-card {
+            border-radius: 15px;
+            transition: transform 0.2s;
+            height: 100%;
+        }
+
+        .actor-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                <div class="card main-card">
+                    <div class="header-section">
+                        <span class="feature-badge" style="background: rgba(255,255,255,0.2); color: white;">ANALYSE
+                            UML</span>
+                        <h1 class="display-5 fw-bold mb-2">Diagramme de Cas d'Utilisation</h1>
+                        <p class="lead opacity-75">Système de Gestion de Cabinet Dentaire (Cabinet-Dentaire)</p>
+                    </div>
+
+                    <div class="diagram-container">
+                        <div class="mermaid">
+                            useCaseDiagram
+                            actor Patient
+                            actor Dentiste as "Médecin Dentiste"
+                            actor Secretaire as "Secrétaire"
+                            actor Admin as "Administrateur"
+
+                            package "Cabinet Dentaire" {
+                            usecase UC1 as "Authentification"
+                            usecase UC2 as "Prendre RDV (Patient)"
+                            usecase UC3 as "Prendre RDV (Agenda)"
+                            usecase UC4 as "Envoyer Rappels SMS"
+                            usecase UC5 as "Gérer Dossiers Médicaux"
+                            usecase UC6 as "Générer et Transmettre BS (CNAM)"
+                            usecase UC7 as "Gérer Stocks (Ajout/Retrait)"
+                            usecase UC8 as "Alertes Stock Bas"
+                            }
+
+                            Patient --> UC1
+                            Patient --> UC2
+
+                            Secretaire --> UC1
+                            Secretaire --> UC3
+                            Secretaire --> UC4
+
+                            Dentiste --> UC1
+                            Dentiste --> UC5
+                            Dentiste --> UC6
+
+                            Admin --> UC1
+                            Admin --> UC7
+                            Admin --> UC8
+
+                            UC2 ..> UC1 : <<include>>
+                                UC3 ..> UC1 : <<include>>
+                                    UC4 ..> UC1 : <<include>>
+                                        UC5 ..> UC1 : <<include>>
+                                            UC6 ..> UC5 : <<extend>>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border-top">
+                        <div class="row g-4">
+                            <div class="col-md-3">
+                                <div class="card actor-card border-0 shadow-sm p-3 bg-light">
+                                    <h6 class="fw-bold text-primary">👤 Patient</h6>
+                                    <p class="small text-muted mb-0"><strong>Prendre RDV :</strong> Le patient peut
+                                        prendre lui-même un rendez-vous.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card actor-card border-0 shadow-sm p-3 bg-light">
+                                    <h6 class="fw-bold text-primary">📋 Secrétaire</h6>
+                                    <p class="small text-muted mb-2"><strong>Prendre RDV :</strong> Peut aussi prendre
+                                        des RDV pour les patients.</p>
+                                    <p class="small text-muted mb-0"><strong>Rappels SMS :</strong> Lance les rappels
+                                        automatiques.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card actor-card border-0 shadow-sm p-3 bg-light">
+                                    <h6 class="fw-bold text-primary">🦷 Médecin Dentiste</h6>
+                                    <p class="small text-muted mb-2"><strong>Dossiers Médicaux :</strong> Consulte ou
+                                        modifie les dossiers.</p>
+                                    <p class="small text-muted mb-0"><strong>BS :</strong> Génère et transmet le BS à la
+                                        CNAM.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card actor-card border-0 shadow-sm p-3 bg-light">
+                                    <h6 class="fw-bold text-primary">⚙️ Administrateur</h6>
+                                    <p class="small text-muted mb-0"><strong>Gérer Stocks :</strong> Gère les stocks
+                                        (ajout, retrait, alertes).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e7f1ff',
+                primaryTextColor: '#0d6efd',
+                primaryBorderColor: '#0d6efd',
+                lineColor: '#6c757d',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#ffffff'
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
