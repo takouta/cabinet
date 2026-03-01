@@ -203,8 +203,15 @@
                                 <a href="{{ route('super_admin.users.edit', $user->id) }}" class="text-green-600 hover:text-green-800" title="Modifier">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button onclick="toggleUserStatus({{ $user->id }})" class="text-{{ $user->actif ? 'red' : 'green' }}-600 hover:text-{{ $user->actif ? 'red' : 'green' }}-800" title="{{ $user->actif ? 'Desactiver' : 'Activer' }}">
-                                    <i class="fas fa-{{ $user->actif ? 'ban' : 'check-circle' }}"></i>
+                                <button onclick="toggleUserStatus({{ $user->id }})" class="text-{{ $user->actif ? 'orange' : 'green' }}-600 hover:text-{{ $user->actif ? 'orange' : 'green' }}-800" title="{{ $user->actif ? 'Desactiver' : 'Activer' }}">
+                                    <i class="fas fa-{{ $user->actif ? 'user-slash' : 'user-check' }}"></i>
+                                </button>
+                                <form id="delete-user-{{ $user->id }}" action="{{ route('super_admin.users.destroy', $user->id) }}" method="POST" class="hidden">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                                <button onclick="deleteUser({{ $user->id }})" class="text-red-600 hover:text-red-800" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -314,9 +321,28 @@
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
-            }).then(() => location.reload());
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Une erreur est survenue');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erreur reseau');
+            });
+        }
+    }
+
+    function deleteUser(userId) {
+        if (confirm('Etes-vous sur de vouloir supprimer cet utilisateur ? Cette action est irreversible.')) {
+            document.getElementById(`delete-user-${userId}`).submit();
         }
     }
 </script>

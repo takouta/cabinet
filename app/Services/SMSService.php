@@ -27,7 +27,7 @@ class SMSService
                     'body' => $message
                 ]
             );
-            Log::info("SMS envoyÃ© Ã  $numero");
+            Log::info("SMS envoyé à $numero");
             return true;
         } catch (\Exception $e) {
             Log::error("Erreur envoi SMS: " . $e->getMessage());
@@ -38,7 +38,7 @@ class SMSService
     public function rappelRendezVous($patient, $rendezVous)
     {
         $message = "Rappel: Rendez-vous le " . 
-                   $rendezVous->date_heure->format('d/m/Y Ã  H:i') . 
+                   $rendezVous->date_heure->format('d/m/Y à H:i') . 
                    " avec Dr. " . $rendezVous->dentiste->name;
 
         return $this->envoyerSMS($patient->telephone, $message);
@@ -47,8 +47,8 @@ class SMSService
     public function alerteStockBas($fournisseur, $stock)
     {
         $message = "Alerte stock: " . $stock->nom . 
-                   " en quantitÃ© basse (" . $stock->quantite . 
-                   $stock->unite_mesure . "). Commande nÃ©cessaire.";
+                   " en quantité basse (" . $stock->quantite . 
+                   $stock->unite_mesure . "). Commande nécessaire.";
 
         return $this->envoyerSMS($fournisseur->telephone, $message);
     }

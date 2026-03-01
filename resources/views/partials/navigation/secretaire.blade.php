@@ -6,30 +6,30 @@
     </a>
 </li>
 
-@if(Route::has('rendezvous.index'))
+@if(Route::has('secretaire.rendezvous.index'))
 <li>
-    <a href="{{ route('rendezvous.index') }}"
-       class="{{ request()->routeIs('rendezvous.*') ? 'active' : '' }}">
+    <a href="{{ route('secretaire.rendezvous.index') }}"
+       class="{{ request()->routeIs('secretaire.rendezvous.*') ? 'active' : '' }}">
         <i class="fas fa-calendar-check"></i>
         Rendez-vous
     </a>
 </li>
 @endif
 
-@if(Route::has('patients.index'))
+@if(Route::has('secretaire.patients.index'))
 <li>
-    <a href="{{ route('patients.index') }}"
-       class="{{ request()->routeIs('patients.*') ? 'active' : '' }}">
+    <a href="{{ route('secretaire.patients.index') }}"
+       class="{{ request()->routeIs('secretaire.patients.*') ? 'active' : '' }}">
         <i class="fas fa-users"></i>
         Patients
     </a>
 </li>
 @endif
 
-@if(Route::has('sms.index'))
+@if(Route::has('secretaire.sms.index'))
 <li>
-    <a href="{{ route('sms.index') }}"
-       class="{{ request()->routeIs('sms.*') ? 'active' : '' }}">
+    <a href="{{ route('secretaire.sms.index') }}"
+       class="{{ request()->routeIs('secretaire.sms.*') ? 'active' : '' }}">
         <i class="fas fa-comment-dots"></i>
         SMS Rappels
     </a>

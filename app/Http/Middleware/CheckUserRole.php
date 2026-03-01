@@ -14,7 +14,7 @@ class CheckUserRole
         }
 
         if (!in_array(auth()->user()->role, $roles)) {
-            abort(403, 'AccÃ¨s non autorisÃ©');
+            abort(403, 'Accès non autorisé');
         }
 
         return $next($request);

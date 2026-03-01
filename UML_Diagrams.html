@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisation UML - Cabinet Dentaire</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --secondary: #6c757d;
+            --bg-light: #f8f9fa;
+            --premium-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0f2f5;
+            color: #1a1c1e;
+            padding-bottom: 50px;
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: -50px;
+        }
+        .main-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var-premium-shadow;
+            background: white;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .diagram-container {
+            padding: 40px;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .card-title-section {
+            padding: 25px 40px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .badge-premium {
+            background-color: #e7f1ff;
+            color: var(--primary);
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .nav-pills .nav-link {
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            color: var(--secondary);
+            transition: all 0.3s ease;
+        }
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+        }
+        .footer-note {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bg">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold">Analyse Architecturale</h1>
+            <p class="lead opacity-75">Système de Gestion de Cabinet Dentaire</p>
+        </div>
+    </div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                
+                <!-- Nav Tabs -->
+                <ul class="nav nav-pills justify-content-center mb-4" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-usecase-tab" data-bs-toggle="pill" data-bs-target="#pills-usecase" type="button" role="tab">Cas d'Utilisation</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-class-tab" data-bs-toggle="pill" data-bs-target="#pills-class" type="button" role="tab">Diagramme de Classe</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <!-- Use Case Diagram -->
+                    <div class="tab-pane fade show active" id="pills-usecase" role="tabpanel">
+                        <div class="card main-card">
+                            <div class="card-title-section">
+                                <h3 class="fw-bold mb-0">Diagramme de Cas d'Utilisation</h3>
+                                <span class="badge-premium">UML 2.5</span>
+                            </div>
+                            <div class="diagram-container">
+                                <div class="mermaid">
+                                    useCaseDiagram
+                                    actor Patient
+                                    actor Dentiste as "Médecin Dentiste"
+                                    actor Secretaire as "Secrétaire"
+                                    actor Admin as "Administrateur"
+
+                                    package "Système Cabinet Dentaire" {
+                                        usecase UC1 as "Authentification"
+                                        usecase UC2 as "Prendre RDV (En ligne)"
+                                        usecase UC3 as "Gérer l'Agenda"
+                                        usecase UC4 as "Envoyer Rappels SMS / Email"
+                                        usecase UC5 as "Gérer Dossiers Médicaux & Soins"
+                                        usecase UC6 as "Générer Bordereaux CNAM"
+                                        usecase UC7 as "Gérer Stock & Fournisseurs"
+                                        usecase UC8 as "Consulter Logs d'Audit"
+                                    }
+
+                                    Patient --> UC1
+                                    Patient --> UC2
+
+                                    Secretaire --> UC1
+                                    Secretaire --> UC3
+                                    Secretaire --> UC4
+
+                                    Dentiste --> UC1
+                                    Dentiste --> UC5
+                                    Dentiste --> UC6
+
+                                    Admin --> UC1
+                                    Admin --> UC7
+                                    Admin --> UC8
+
+                                    UC2 ..> UC1 : &lt;&lt;include&gt;&gt;
+                                    UC3 ..> UC1 : &lt;&lt;include&gt;&gt;
+                                    UC5 ..> UC1 : &lt;&lt;include&gt;&gt;
+                                    UC7 ..> UC1 : &lt;&lt;include&gt;&gt;
+                                    UC6 ..> UC5 : &lt;&lt;extend&gt;&gt;
+                                </div>
+                            </div>
+                            <div class="p-4 bg-light border-top">
+                                <div class="row text-muted small">
+                                    <div class="col-md-3"><strong>Patient:</strong> Accès public, prise de RDV autonome.</div>
+                                    <div class="col-md-3"><strong>Secrétaire:</strong> Gestion opérationnelle et communication.</div>
+                                    <div class="col-md-3"><strong>Dentiste:</strong> Cœur métier, soins et administration CNAM.</div>
+                                    <div class="col-md-3"><strong>Admin:</strong> Logistique technique et inventaire.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Diagram -->
+                    <div class="tab-pane fade" id="pills-class" role="tabpanel">
+                        <div class="card main-card">
+                            <div class="card-title-section">
+                                <h3 class="fw-bold mb-0">Diagramme de Classe</h3>
+                                <span class="badge-premium">Architecture Modulaire</span>
+                            </div>
+                            <div class="diagram-container" style="overflow-x: auto;">
+                                <div class="mermaid">
+                                    classDiagram
+                                        class User {
+                                            +int id
+                                            +string name
+                                            +string email
+                                            +string role
+                                        }
+
+                                        class Patient {
+                                            +int id
+                                            +string nom
+                                            +string prenom
+                                            +string email
+                                            +string telephone
+                                        }
+
+                                        class RendezVous {
+                                            +int id
+                                            +datetime date_heure
+                                            +string statut
+                                            +string motif
+                                        }
+
+                                        class Soin {
+                                            +int id
+                                            +string acte_code
+                                            +date date_soin
+                                            +decimal montant
+                                        }
+
+                                        class BordereauCnam {
+                                            +int id
+                                            +string numero_bs
+                                            +date date_bordereau
+                                            +decimal montant_total
+                                            +string statut
+                                        }
+
+                                        class StockMatierePremiere {
+                                            +int id
+                                            +string nom
+                                            +int quantite
+                                            +int seuil_alerte
+                                        }
+
+                                        class Fournisseur {
+                                            +int id
+                                            +string nom
+                                            +string telephone
+                                        }
+
+                                        User "1" -- "*" RendezVous : gère (Dentiste)
+                                        Patient "1" -- "*" RendezVous : effectue
+                                        User "1" -- "*" Soin : réalise (Dentiste)
+                                        Patient "1" -- "*" Soin : reçoit
+                                        BordereauCnam "1" -- "*" Soin : regroupe
+                                        User "1" -- "*" BordereauCnam : génère (Dentiste)
+                                        Fournisseur "1" -- "*" StockMatierePremiere : approvisionne
+                                </div>
+                            </div>
+                             <div class="p-4 bg-light border-top">
+                                <p class="small text-muted mb-0"><strong>Note:</strong> Ce diagramme représente les entités métiers principales extraites des modules Laravel (Patient, RendezVous, Stock, CNAM).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-note">
+                    Généré automatiquement par Antigravity &bull; Cabinet Dentaire &bull; 2026
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e7f1ff',
+                primaryTextColor: '#0d6efd',
+                primaryBorderColor: '#0d6efd',
+                lineColor: '#6c757d',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#ffffff',
+                fontFamily: 'Plus Jakarta Sans'
+            },
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+            securityLevel: 'loose'
+        });
+    </script>
+</body>
+</html>

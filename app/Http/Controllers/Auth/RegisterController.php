@@ -41,6 +41,7 @@ class RegisterController extends Controller
         $user = User::create([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
+            'name' => $request->prenom . ' ' . $request->nom,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'telephone' => $request->telephone,
@@ -85,6 +86,7 @@ class RegisterController extends Controller
         $user = User::create([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
+            'name' => $request->prenom . ' ' . $request->nom,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'telephone' => $request->telephone,

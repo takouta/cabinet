@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +21,8 @@ class Patient extends Model
         'adresse',
         'telephone',
         'antecedents_medicaux',
+        'cabinet_id',
+        'medecin_id',
         'allergies',
         'groupe_sanguin',
         'profession',
@@ -38,9 +40,19 @@ class Patient extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function rendezVous(): HasMany
+    public function rendezVous()
     {
         return $this->hasMany(RendezVous::class);
+    }
+
+    public function cabinet()
+    {
+        return $this->belongsTo(Cabinet::class, 'cabinet_id');
+    }
+
+    public function medecin()
+    {
+        return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'medecin_id');
     }
 
     public function factures(): HasMany

@@ -15,7 +15,7 @@
         @endif
 
         <div class="mb-3">
-            <a href="{{ route('rendezvous.create') }}" class="btn btn-primary">Nouveau Rendez-vous</a>
+            <a href="{{ route($routePrefix . '.rendezvous.create') }}" class="btn btn-primary">Nouveau Rendez-vous</a>
             <a href="/dashboard" class="btn btn-secondary">Retour au dashboard</a>
         </div>
 
@@ -37,13 +37,13 @@
                         <td>{{ $rdv->date_heure->format('d/m/Y H:i') }}</td>
                         <td>{{ $rdv->motif }}</td>
                         <td>
-                            <span class="badge bg-{{ $rdv->statut == 'confirmÃ©' ? 'success' : ($rdv->statut == 'annulÃ©' ? 'danger' : 'warning') }}">
+                            <span class="badge bg-{{ $rdv->statut == 'confirmé' ? 'success' : ($rdv->statut == 'annulé' ? 'danger' : 'warning') }}">
                                 {{ $rdv->statut }}
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('rendezvous.show', $rdv) }}" class="btn btn-info btn-sm">Voir</a>
-                            <a href="{{ route('rendezvous.edit', $rdv) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{{ route($routePrefix . '.rendezvous.show', $rdv) }}" class="btn btn-info btn-sm">Voir</a>
+                            <a href="{{ route($routePrefix . '.rendezvous.edit', $rdv) }}" class="btn btn-warning btn-sm">Modifier</a>
                         </td>
                     </tr>
                     @endforeach
@@ -51,7 +51,7 @@
             </table>
         @else
             <div class="alert alert-info">
-                Aucun rendez-vous trouvÃ©.
+                Aucun rendez-vous trouvé.
             </div>
         @endif
     </div>

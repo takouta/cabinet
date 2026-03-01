@@ -7,9 +7,11 @@
 </li>
 
 <li>
-    <a href="{{ route('rendezvous.index') }}"
-       class="{{ request()->routeIs('rendezvous.*') ? 'active' : '' }}">
-        <i class="fas fa-calendar-check"></i>
-        Mes Rendez-vous
-    </a>
+    @if(Route::has('patient.rendezvous.index'))
+        <a href="{{ route('patient.rendezvous.index') }}"
+           class="{{ request()->routeIs('patient.rendezvous.*') ? 'active' : '' }}">
+            <i class="fas fa-calendar-check"></i>
+            Mes Rendez-vous
+        </a>
+    @endif
 </li>

@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><i class="fas fa-sms me-2"></i>Gestion des SMS</h1>
-    <a href="{{ route('sms.create') }}" class="btn btn-primary">
+    <a href="{{ route('sms.index') }}" class="btn btn-primary">
         <i class="fas fa-paper-plane me-2"></i>Nouveau SMS
     </a>
 </div>
@@ -14,7 +14,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h5 class="card-title mb-0"><i class="fas fa-envelope me-2"></i>Envoi de SMS GroupÃ©s</h5>
+                <h5 class="card-title mb-0"><i class="fas fa-envelope me-2"></i>Envoi de SMS Groupés</h5>
             </div>
             <div class="card-body">
                 <!-- Rappels RDV -->
@@ -32,7 +32,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <small class="form-text text-muted">Maintenez Ctrl pour sÃ©lectionner plusieurs patients</small>
+                                <small class="form-text text-muted">Maintenez Ctrl pour sélectionner plusieurs patients</small>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Message</label>
@@ -62,7 +62,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <small class="form-text text-muted">Maintenez Ctrl pour sÃ©lectionner plusieurs fournisseurs</small>
+                                <small class="form-text text-muted">Maintenez Ctrl pour sélectionner plusieurs fournisseurs</small>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Message</label>
@@ -87,12 +87,12 @@
             <div class="card-body">
                 <div class="text-center">
                     <h3>{{ $sms->count() }}</h3>
-                    <p class="text-muted">SMS envoyÃ©s</p>
+                    <p class="text-muted">SMS envoyés</p>
                 </div>
                 <div class="row text-center">
                     <div class="col-6">
-                        <h5 class="text-success">{{ $sms->where('statut', 'envoyÃ©')->count() }}</h5>
-                        <small class="text-muted">EnvoyÃ©s</small>
+                        <h5 class="text-success">{{ $sms->where('statut', 'envoyé')->count() }}</h5>
+                        <small class="text-muted">Envoyés</small>
                     </div>
                     <div class="col-6">
                         <h5 class="text-warning">{{ $sms->where('statut', 'en_attente')->count() }}</h5>
@@ -105,7 +105,7 @@
         <!-- Types de SMS -->
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0"><i class="fas fa-tags me-2"></i>RÃ©partition par Type</h5>
+                <h5 class="card-title mb-0"><i class="fas fa-tags me-2"></i>Répartition par Type</h5>
             </div>
             <div class="card-body">
                 @php
@@ -159,9 +159,9 @@
                             <td>
                                 @php
                                     $statutColors = [
-                                        'envoyÃ©' => 'success',
+                                        'envoyé' => 'success',
                                         'en_attente' => 'warning',
-                                        'Ã©chouÃ©' => 'danger'
+                                        'échoué' => 'danger'
                                     ];
                                 @endphp
                                 <span class="badge bg-{{ $statutColors[$message->statut] ?? 'secondary' }}">
@@ -175,7 +175,7 @@
                                 <form action="{{ route('sms.destroy', $message->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('ÃŠtes-vous sÃ»r ?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr ?')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -188,7 +188,7 @@
         @else
             <div class="alert alert-info">
                 <i class="fas fa-info-circle me-2"></i>
-                Aucun SMS trouvÃ©.
+                Aucun SMS trouvé.
             </div>
         @endif
     </div>

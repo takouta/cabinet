@@ -74,16 +74,28 @@
         input[type="password"],
         input[type="date"],
         input[type="tel"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 15px;
             border: 1px solid #b0bec5;
             border-radius: 8px;
             font-size: 1rem;
             transition: border 0.3s;
+            background-color: white;
+            appearance: none;
         }
 
-        input:focus {
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23b0bec5%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat, repeat;
+            background-position: right .7em top 50%, 0 0;
+            background-size: .65em auto, 100%;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
             border-color: #0288d1;
             outline: none;
             box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.2);
@@ -153,6 +165,20 @@
             <form method="POST" action="{{ !empty($patientMode) ? route('patient.register.submit') : route('register') }}">
                 @csrf
 
+                @if(empty($patientMode))
+                <div class="input-group">
+                    <label for="role">Vous êtes :</label>
+                    <select id="role" name="role" required>
+                        <option value="" disabled {{ old('role') ? '' : 'selected' }}>Choisir votre rôle...</option>
+                        <option value="patient" {{ old('role') == 'patient' ? 'selected' : '' }}>Patient</option>
+                        <option value="fournisseur" {{ old('role') == 'fournisseur' ? 'selected' : '' }}>Fournisseur</option>
+                    </select>
+                    @error('role')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                @endif
+
                 <div class="input-group">
                     <label for="name">Nom complet</label>
                     <input type="text" id="name" name="name" value="{{ old('name') }}" required autofocus>
@@ -203,6 +229,40 @@
                         <label for="adresse">Adresse</label>
                         <textarea id="adresse" name="adresse" style="width: 100%; padding: 15px; border: 1px solid #b0bec5; border-radius: 8px; font-size: 1rem;" rows="3" required>{{ old('adresse') }}</textarea>
                         @error('adresse')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="input-group">
+                        <label for="cabinet_id">Cabinet Dentaire (Optionnel)</label>
+                        <select id="cabinet_id" name="cabinet_id">
+                            <option value="">Choisir un cabinet...</option>
+                            @if(isset($cabinets))
+                                @foreach($cabinets as $cabinet)
+                                    <option value="{{ $cabinet->id }}" {{ old('cabinet_id') == $cabinet->id ? 'selected' : '' }}>
+                                        {{ $cabinet->nom }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        @error('cabinet_id')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="input-group">
+                        <label for="medecin_id">Médecin Traitant (Optionnel)</label>
+                        <select id="medecin_id" name="medecin_id">
+                            <option value="">Choisir un médecin...</option>
+                            @if(isset($medecins))
+                                @foreach($medecins as $medecin)
+                                    <option value="{{ $medecin->id }}" {{ old('medecin_id') == $medecin->id ? 'selected' : '' }}>
+                                        Dr. {{ $medecin->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        @error('medecin_id')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
                     </div>

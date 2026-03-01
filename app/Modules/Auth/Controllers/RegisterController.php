@@ -15,7 +15,7 @@ class RegisterController extends Controller
 {
     use RegistersUsers;
 
-    protected $redirectTo = '/dashboard';
+    protected $redirectTo = '/patient/dashboard';
 
     public function __construct()
     {
@@ -24,7 +24,9 @@ class RegisterController extends Controller
 
     public function showPatientRegistrationForm()
     {
-        return view('auth.register', ['patientMode' => true]);
+        $cabinets = \App\Models\Cabinet::all();
+        $medecins = \App\Modules\Auth\Models\User::whereIn('role', ['dentiste', 'medecin'])->get();
+        return view('auth.register', ['patientMode' => true, 'cabinets' => $cabinets, 'medecins' => $medecins]);
     }
 
     protected function validator(array $data)
@@ -33,16 +35,34 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'string', 'in:patient,fournisseur'],
         ]);
     }
 
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+        $role = $data['role'] ?? 'patient';
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
             'password' => Hash::make($data['password']),
+            'role'     => $role,  // Role inputé, sinon patient par defaut
+            'actif'    => false,      // Attente d'activation
         ]);
+
+        if ($role === 'fournisseur' && Schema::hasTable('fournisseurs')) {
+            \App\Modules\Fournisseur\Models\Fournisseur::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'nom' => $data['name'],
+                    'telephone' => 'A renseigner',
+                    'adresse' => 'A renseigner',
+                    'specialite' => 'Général',
+                ]
+            );
+        }
+
+        return $user;
     }
 
     public function registerPatient(Request $request)
@@ -54,6 +74,8 @@ class RegisterController extends Controller
             'telephone' => ['required', 'regex:/^[0-9]+$/', 'min:8', 'max:20'],
             'date_naissance' => ['required', 'date'],
             'adresse' => ['required', 'string'],
+            'cabinet_id' => ['nullable', 'exists:cabinets,id'],
+            'medecin_id' => ['nullable', 'exists:users,id'],
         ];
 
         $validated = $request->validate($rules);
@@ -83,6 +105,8 @@ class RegisterController extends Controller
                 'telephone' => $validated['telephone'],
                 'date_naissance' => $validated['date_naissance'],
                 'adresse' => $validated['adresse'],
+                'cabinet_id' => $validated['cabinet_id'] ?? null,
+                'medecin_id' => $validated['medecin_id'] ?? null,
             ]);
         }
 
@@ -91,14 +115,7 @@ class RegisterController extends Controller
 
         // Si la base ne supporte pas encore "patient", le fallback "assistant"
         // est redirige vers le dashboard patient.
-        if ($storableRole !== 'patient') {
-            return redirect()->route('patient.dashboard')->with(
-                'success',
-                'Compte cree. Role patient non disponible sur ce schema, migration requise.'
-            );
-        }
-
-        return redirect()->route('patient.dashboard')->with('success', 'Compte patient cree avec succes.');
+        return redirect()->route('login')->with('success', 'Compte patient créé. Veuillez attendre l\'activation par l\'administrateur.');
     }
 
     private function resolvePatientRoleForCurrentSchema(): string

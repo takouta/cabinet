@@ -21,6 +21,9 @@ class UserController extends Controller
             $query->where('actif', $request->statut === 'actif');
         }
 
+        // Sécurité : le super_admin ne voit et n'active que les admins
+        $query->whereIn('role', ['admin_cabinet']);
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -38,7 +41,7 @@ class UserController extends Controller
             'total' => User::count(),
             'actifs' => User::where('actif', true)->count(),
             'patients' => User::where('role', 'patient')->count(),
-            'medecins' => User::whereIn('role', ['medecin', 'dentiste'])->count(),
+            'medecins' => User::where('role', 'medecin')->count(),
         ];
 
         return view('super_admin.users.index', compact('users', 'stats'));
@@ -47,15 +50,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = [
-            'super_admin' => 'Super Admin',
             'admin_cabinet' => 'Admin Cabinet',
-            'admin' => 'Admin',
-            'medecin' => 'Medecin',
-            'dentiste' => 'Dentiste',
-            'secretaire' => 'Secretaire',
-            'assistant' => 'Assistant',
-            'patient' => 'Patient',
-            'fournisseur' => 'Fournisseur',
         ];
 
         return view('super_admin.users.create', compact('roles'));
@@ -68,7 +63,7 @@ class UserController extends Controller
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'role' => 'required|string',
+            'role' => 'required|string|in:admin_cabinet',
             'telephone' => 'nullable|regex:/^[0-9]+$/|min:8|max:30',
             'adresse' => 'nullable|string|max:255',
         ]);
@@ -101,15 +96,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $roles = [
-            'super_admin' => 'Super Admin',
             'admin_cabinet' => 'Admin Cabinet',
-            'admin' => 'Admin',
-            'medecin' => 'Medecin',
-            'dentiste' => 'Dentiste',
-            'secretaire' => 'Secretaire',
-            'assistant' => 'Assistant',
-            'patient' => 'Patient',
-            'fournisseur' => 'Fournisseur',
         ];
 
         return view('super_admin.users.edit', compact('user', 'roles'));
@@ -123,7 +110,7 @@ class UserController extends Controller
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'role' => 'required|string',
+            'role' => 'required|string|in:admin_cabinet',
             'telephone' => 'nullable|regex:/^[0-9]+$/|min:8|max:30',
             'adresse' => 'nullable|string|max:255',
             'password' => 'nullable|min:6|confirmed',
@@ -152,6 +139,10 @@ class UserController extends Controller
     public function toggleStatus($id)
     {
         $user = User::findOrFail($id);
+
+        // All roles can be toggled by Super Admin for now
+        // (Previously restricted to admin, admin_cabinet)
+
         $user->actif = !$user->actif;
         $user->save();
 

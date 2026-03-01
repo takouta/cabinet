@@ -70,10 +70,6 @@ class LoginController extends Controller
             'secretaire' => 'secretaire.dashboard',
             'patient' => 'patient.dashboard',
             'fournisseur' => 'fournisseur.dashboard',
-            // Compatibilite avec les roles deja presents dans le projet
-            'admin' => 'admin.dashboard',
-            'dentiste' => 'medecin.dashboard',
-            'assistant' => 'patient.dashboard',
         ];
 
         $route = $roleToRoute[$role ?? ''] ?? 'dashboard';
@@ -167,10 +163,6 @@ class LoginController extends Controller
             'secretaire' => '/secretaire/dashboard',
             'patient' => '/patient/dashboard',
             'fournisseur' => '/fournisseur/dashboard',
-            // Compatibilite avec les roles deja presents dans le projet
-            'admin' => '/admin/dashboard',
-            'dentiste' => '/medecin/dashboard',
-            'assistant' => '/patient/dashboard',
         ];
 
         return $paths[$role ?? ''] ?? '/dashboard';

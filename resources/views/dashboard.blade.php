@@ -339,11 +339,16 @@
         <div class="logo">Smile<span>Care</span></div>
         <div class="nav-links">
             <a href="{{ route('dashboard') }}"><i class="fas fa-chart-line me-1"></i> Tableau de Bord</a>
-            @if(Route::has('patients.index'))
-            <a href="{{ route('patients.index') }}"><i class="fas fa-users me-1"></i> Patients</a>
+            @if(Route::has('admin.patients.index'))
+            <a href="{{ route('admin.patients.index') }}"><i class="fas fa-users me-1"></i> Patients</a>
             @endif
-            @if(Route::has('rendezvous.index'))
-            <a href="{{ route('rendezvous.index') }}"><i class="fas fa-calendar-check me-1"></i> Rendez-vous</a>
+            @if(Route::has('admin.rendezvous.index') || Route::has('patient.rendezvous.index'))
+            @php 
+                $rdvRoute = Auth::user()->role == 'patient' ? 'patient.rendezvous.index' : 
+                          (in_array(Auth::user()->role, ['admin', 'admin_cabinet']) ? 'admin.rendezvous.index' : 
+                          (Auth::user()->role == 'medecin' ? 'medecin.rendezvous.index' : 'secretaire.rendezvous.index'));
+            @endphp
+            <a href="{{ route($rdvRoute) }}"><i class="fas fa-calendar-check me-1"></i> Rendez-vous</a>
             @endif
             @if(Route::has('consultations.index'))
             <a href="{{ route('consultations.index') }}"><i class="fas fa-stethoscope me-1"></i> Consultations</a>
@@ -432,8 +437,13 @@
                 <i class="fas fa-user-plus"></i> Nouveau Patient
             </a>
             @endif
-            @if(Route::has('rendezvous.create'))
-            <a href="{{ route('rendezvous.create') }}" class="action-btn green">
+            @if(Route::has('admin.rendezvous.create') || Route::has('patient.rendezvous.create'))
+            @php 
+                $rdvCreateRoute = Auth::user()->role == 'patient' ? 'patient.rendezvous.create' : 
+                                (in_array(Auth::user()->role, ['admin', 'admin_cabinet']) ? 'admin.rendezvous.create' : 
+                                (Auth::user()->role == 'medecin' ? 'medecin.rendezvous.create' : 'secretaire.rendezvous.create'));
+            @endphp
+            <a href="{{ route($rdvCreateRoute) }}" class="action-btn green">
                 <i class="fas fa-calendar-plus"></i> Prendre Rendez-vous
             </a>
             @endif

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'DÃ©tails Fournisseur')
+@section('title', 'Détails Fournisseur')
 
 @section('content')
 <div class="row">
@@ -24,11 +24,11 @@
                         <td>{{ $fournisseur->email }}</td>
                     </tr>
                     <tr>
-                        <th>TÃ©lÃ©phone:</th>
+                        <th>Téléphone:</th>
                         <td>{{ $fournisseur->telephone }}</td>
                     </tr>
                     <tr>
-                        <th>SpÃ©cialitÃ©:</th>
+                        <th>Spécialité:</th>
                         <td>
                             <span class="badge bg-primary">{{ $fournisseur->specialite }}</span>
                         </td>
@@ -38,11 +38,11 @@
                         <td>{{ $fournisseur->adresse }}</td>
                     </tr>
                     <tr>
-                        <th>CrÃ©Ã© le:</th>
+                        <th>Créé le:</th>
                         <td>{{ $fournisseur->created_at->format('d/m/Y H:i') }}</td>
                     </tr>
                     <tr>
-                        <th>ModifiÃ© le:</th>
+                        <th>Modifié le:</th>
                         <td>{{ $fournisseur->updated_at->format('d/m/Y H:i') }}</td>
                     </tr>
                 </table>
@@ -57,7 +57,7 @@
                     <form action="{{ route('fournisseurs.destroy', $fournisseur) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('ÃŠtes-vous sÃ»r de vouloir supprimer ce fournisseur?')">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur?')">
                             <i class="fas fa-trash me-2"></i>Supprimer
                         </button>
                     </form>
@@ -81,8 +81,8 @@
                             <thead>
                                 <tr>
                                     <th>Produit</th>
-                                    <th>CatÃ©gorie</th>
-                                    <th>QuantitÃ©</th>
+                                    <th>Catégorie</th>
+                                    <th>Quantité</th>
                                     <th>Prix</th>
                                 </tr>
                             </thead>
@@ -98,7 +98,7 @@
                                             {{ $stock->quantite }} {{ $stock->unite_mesure }}
                                         </span>
                                     </td>
-                                    <td>{{ number_format($stock->prix_unitaire, 2, ',', ' ') }} â‚¬</td>
+                                    <td>{{ number_format($stock->prix_unitaire, 2, ',', ' ') }} €</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -107,7 +107,7 @@
                 @else
                     <div class="text-center text-muted py-4">
                         <i class="fas fa-box-open fa-3x mb-3"></i>
-                        <p>Aucun produit associÃ© Ã  ce fournisseur</p>
+                        <p>Aucun produit associé à ce fournisseur</p>
                         <a href="{{ route('stock.create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Ajouter un produit
                         </a>
@@ -129,7 +129,7 @@
                     </div>
                     <div class="col-6">
                         <h4 class="text-success">
-                            {{ number_format($stocks->sum('prix_unitaire'), 2, ',', ' ') }} â‚¬
+                            {{ number_format($stocks->sum('prix_unitaire'), 2, ',', ' ') }} €
                         </h4>
                         <small class="text-muted">Valeur totale</small>
                     </div>

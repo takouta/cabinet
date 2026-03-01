@@ -11,9 +11,9 @@
     </a>
 </li>
 
-@if(Route::has('patients.index'))
+@if(Route::has('admin.patients.index'))
 <li>
-    <a href="{{ route('patients.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('patients.*') ? 'bg-blue-100 dark:bg-gray-700 text-blue-600' : '' }}">
+    <a href="{{ route('admin.patients.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('patients.*') ? 'bg-blue-100 dark:bg-gray-700 text-blue-600' : '' }}">
         <i class="fas fa-users w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"></i>
         <span class="ml-3">Patients</span>
         <span class="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">{{ $patientsCount }}</span>
@@ -30,14 +30,14 @@
         </svg>
     </button>
     <ul x-show="openRdv" class="py-2 space-y-2">
-        @if(Route::has('rendezvous.index'))
+        @if(Route::has('admin.rendezvous.index'))
             <li>
-                <a href="{{ route('rendezvous.index') }}" class="flex items-center p-2 pl-11 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Tous les RDV</a>
+                <a href="{{ route('admin.rendezvous.index') }}" class="flex items-center p-2 pl-11 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Tous les RDV</a>
             </li>
         @endif
-        @if(Route::has('rendezvous.index'))
+        @if(Route::has('admin.rendezvous.index'))
             <li>
-                <a href="{{ route('rendezvous.index') }}" class="flex items-center p-2 pl-11 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                <a href="{{ route('admin.rendezvous.index') }}" class="flex items-center p-2 pl-11 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                     Aujourd'hui
                     <span class="inline-flex items-center justify-center px-2 py-1 ml-3 text-xs font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">{{ $rdvTodayCount }}</span>
                 </a>
@@ -76,6 +76,15 @@
 </li>
 @endif
 
+@if(Route::has('admin.cnam.index'))
+<li>
+    <a href="{{ route('admin.cnam.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('admin.cnam.*') ? 'bg-blue-100 dark:bg-gray-700 text-blue-600' : '' }}">
+        <i class="fas fa-file-invoice-dollar w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+        <span class="ml-3">CNAM (BS)</span>
+    </a>
+</li>
+@endif
+
 @if(Route::has('sms.index'))
 <li>
     <a href="{{ route('sms.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('sms.*') ? 'bg-blue-100 dark:bg-gray-700 text-blue-600' : '' }}">
@@ -85,9 +94,9 @@
 </li>
 @endif
 
-@if(Route::has('gestion-users.index'))
+@if(Route::has('admin.users.index'))
 <li class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-    <a href="{{ route('gestion-users.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('gestion-users.*') ? 'bg-blue-100 dark:bg-gray-700 text-blue-600' : '' }}">
+    <a href="{{ route('admin.users.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('admin.users.*') ? 'bg-blue-100 dark:bg-gray-700 text-blue-600' : '' }}">
         <i class="fas fa-user-shield w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"></i>
         <span class="ml-3">Gestion utilisateurs</span>
     </a>

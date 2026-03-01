@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'DÃ©tails du Rendez-vous')
+@section('title', 'Détails du Rendez-vous')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="fas fa-calendar-check me-2"></i>DÃ©tails du Rendez-vous</h1>
+    <h1><i class="fas fa-calendar-check me-2"></i>Détails du Rendez-vous</h1>
     <div>
-        <a href="{{ route('rendezvous.edit', $rendezvous->id) }}" class="btn btn-warning">
+        <a href="{{ route($routePrefix . '.rendezvous.edit', $rendezvous->id) }}" class="btn btn-warning">
             <i class="fas fa-edit me-2"></i>Modifier
         </a>
-        <a href="{{ route('rendezvous.index') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.rendezvous.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i>Retour
         </a>
     </div>
@@ -32,7 +32,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>TÃ©lÃ©phone:</th>
+                                <th>Téléphone:</th>
                                 <td>{{ $rendezvous->patient->telephone }}</td>
                             </tr>
                             <tr>
@@ -60,8 +60,8 @@
                                 <td>
                                     @php
                                         $statutColors = [
-                                            'confirmÃ©' => 'success',
-                                            'annulÃ©' => 'danger',
+                                            'confirmé' => 'success',
+                                            'annulé' => 'danger',
                                             'en_attente' => 'warning'
                                         ];
                                     @endphp
@@ -71,11 +71,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>CrÃ©Ã© le:</th>
+                                <th>Créé le:</th>
                                 <td>{{ $rendezvous->created_at->format('d/m/Y H:i') }}</td>
                             </tr>
                             <tr>
-                                <th>ModifiÃ© le:</th>
+                                <th>Modifié le:</th>
                                 <td>{{ $rendezvous->updated_at->format('d/m/Y H:i') }}</td>
                             </tr>
                         </table>
@@ -105,7 +105,7 @@
                         <td>{{ $rendezvous->patient->nom }}</td>
                     </tr>
                     <tr>
-                        <th>PrÃ©nom:</th>
+                        <th>Prénom:</th>
                         <td>{{ $rendezvous->patient->prenom }}</td>
                     </tr>
                     <tr>
@@ -113,7 +113,7 @@
                         <td>{{ \Carbon\Carbon::parse($rendezvous->patient->date_naissance)->format('d/m/Y') }}</td>
                     </tr>
                     <tr>
-                        <th>TÃ©lÃ©phone:</th>
+                        <th>Téléphone:</th>
                         <td>{{ $rendezvous->patient->telephone }}</td>
                     </tr>
                     <tr>
@@ -135,21 +135,21 @@
             <div class="card-body">
                 <div class="d-grid gap-2">
                     @if($rendezvous->statut == 'en_attente')
-                        <form action="{{ route('rendezvous.update', $rendezvous->id) }}" method="POST" class="d-inline">
+                        <form action="{{ route($routePrefix . '.rendezvous.update', $rendezvous->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="statut" value="confirmÃ©">
+                            <input type="hidden" name="statut" value="confirmé">
                             <button type="submit" class="btn btn-success w-100">
                                 <i class="fas fa-check me-2"></i>Confirmer RDV
                             </button>
                         </form>
                     @endif
 
-                    @if($rendezvous->statut != 'annulÃ©')
-                        <form action="{{ route('rendezvous.update', $rendezvous->id) }}" method="POST" class="d-inline">
+                    @if($rendezvous->statut != 'annulé')
+                        <form action="{{ route($routePrefix . '.rendezvous.update', $rendezvous->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="statut" value="annulÃ©">
+                            <input type="hidden" name="statut" value="annulé">
                             <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Annuler ce rendez-vous ?')">
                                 <i class="fas fa-times me-2"></i>Annuler RDV
                             </button>

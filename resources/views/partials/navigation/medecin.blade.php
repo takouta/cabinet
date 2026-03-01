@@ -6,10 +6,10 @@
     </a>
 </li>
 
-@if(Route::has('rendezvous.index'))
+@if(Route::has('medecin.rendezvous.index'))
 <li>
-    <a href="{{ route('rendezvous.index') }}"
-       class="{{ request()->routeIs('rendezvous.*') ? 'active' : '' }}">
+    <a href="{{ route('medecin.rendezvous.index') }}"
+       class="{{ request()->routeIs('medecin.rendezvous.*') ? 'active' : '' }}">
         <i class="fas fa-calendar-check"></i>
         Rendez-vous
     </a>
@@ -32,6 +32,16 @@
        class="{{ request()->routeIs('consultations.*') ? 'active' : '' }}">
         <i class="fas fa-file-medical"></i>
         Consultations
+    </a>
+</li>
+@endif
+
+@if(Route::has('medecin.cnam.index'))
+<li>
+    <a href="{{ route('medecin.cnam.index') }}"
+       class="{{ request()->routeIs('medecin.cnam.*') ? 'active' : '' }}">
+        <i class="fas fa-file-invoice-dollar"></i>
+        CNAM (BS)
     </a>
 </li>
 @endif

@@ -7,7 +7,7 @@
 <div class="bg-white rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold">Liste des utilisateurs</h2>
-        <a href="{{ route('users.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <a href="{{ route('admin.users.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             <i class="fas fa-plus mr-2"></i>Nouvel utilisateur
         </a>
     </div>
@@ -34,11 +34,18 @@
                     </span>
                 </td>
                 <td class="py-2 px-4 border-b">
-                    <a href="{{ route('users.edit', $user->id) }}" class="text-blue-600 hover:text-blue-800 mr-2">
+                    <a href="{{ route('admin.users.edit', $user->id) }}" class="text-blue-600 hover:text-blue-800 mr-2">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <button onclick="toggleUser({{ $user->id }})" class="text-{{ $user->actif ? 'red' : 'green' }}-600 hover:text-{{ $user->actif ? 'red' : 'green' }}-800">
-                        <i class="fas fa-{{ $user->actif ? 'ban' : 'check-circle' }}"></i>
+                    <button onclick="toggleUser({{ $user->id }})" class="text-{{ $user->actif ? 'orange' : 'green' }}-600 hover:text-{{ $user->actif ? 'orange' : 'green' }}-800 mr-2" title="{{ $user->actif ? 'Desactiver' : 'Activer' }}">
+                        <i class="fas fa-{{ $user->actif ? 'user-slash' : 'user-check' }}"></i>
+                    </button>
+                    <form id="delete-user-{{ $user->id }}" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                    <button onclick="deleteUser({{ $user->id }})" class="text-red-600 hover:text-red-800" title="Supprimer">
+                        <i class="fas fa-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -54,19 +61,32 @@
 <script>
 function toggleUser(id) {
     if (confirm('Voulez-vous changer le statut de cet utilisateur ?')) {
-        fetch(`/users/${id}/toggle-status`, {
+        fetch(`/admin/users/${id}/toggle-status`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 location.reload();
+            } else {
+                alert(data.message || 'Une erreur est survenue');
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Erreur reseau');
         });
+    }
+}
+
+function deleteUser(userId) {
+    if (confirm('Etes-vous sur de vouloir supprimer cet utilisateur ? Cette action est irreversible.')) {
+        document.getElementById(`delete-user-${userId}`).submit();
     }
 }
 </script>

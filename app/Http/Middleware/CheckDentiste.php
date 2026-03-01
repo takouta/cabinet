@@ -11,20 +11,20 @@ class CheckDentiste
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // VÃ©rifier si l'utilisateur est connectÃ©
+        // Vérifier si l'utilisateur est connecté
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Veuillez vous connecter.');
         }
 
         $user = Auth::user();
         
-        // VÃ©rifier si l'utilisateur est admin ou dentiste
-        if ($user->role === 'admin' || $user->role === 'dentiste') {
+        // Vérifier si l'utilisateur est admin_cabinet ou medecin
+        if ($user->role === 'admin_cabinet' || $user->role === 'medecin') {
             return $next($request);
         }
 
-        // Si l'utilisateur n'est pas autorisÃ©
+        // Si l'utilisateur n'est pas autorisé
         return redirect()->route('dashboard')
-                        ->with('error', 'AccÃ¨s non autorisÃ©. Cette section est rÃ©servÃ©e aux dentistes et administrateurs.');
+                        ->with('error', 'Accès non autorisé. Cette section est réservée aux médecins et administrateurs.');
     }
 }

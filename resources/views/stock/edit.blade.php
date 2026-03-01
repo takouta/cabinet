@@ -190,11 +190,11 @@
         <div class="nav-links">
             <a href="{{ route('dashboard') }}">Tableau de Bord</a>
             <a href="{{ route('stock.index') }}">Stock</a>
-            <a href="{{ route('patients.index') }}">Patients</a>
-            <a href="{{ route('rendezvous.index') }}">Rendez-vous</a>
+            <a href="{{ route('admin.patients.index') }}">Patients</a>
+            <a href="{{ route('admin.rendezvous.index') }}">Rendez-vous</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn-logout">DÃ©connexion</button>
+                <button type="submit" class="btn-logout">Déconnexion</button>
             </form>
         </div>
     </nav>
@@ -203,7 +203,7 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h1 class="card-title">Modifier le matÃ©riel</h1>
+                <h1 class="card-title">Modifier le matériel</h1>
                 <a href="{{ route('stock.index') }}" class="btn-back">â† Retour au stock</a>
             </div>
 
@@ -224,33 +224,33 @@
                 @method('PUT')
 
                 <div class="form-group">
-                    <label for="nom" class="form-label">Nom du matÃ©riel *</label>
+                    <label for="nom" class="form-label">Nom du matériel *</label>
                     <input type="text" class="form-control" id="nom" name="nom" 
                            value="{{ old('nom', $stock->nom) }}" required>
-                    <div class="form-text">Nom complet du matÃ©riel ou produit</div>
+                    <div class="form-text">Nom complet du matériel ou produit</div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="quantite" class="form-label">QuantitÃ© en stock *</label>
+                        <label for="quantite" class="form-label">Quantité en stock *</label>
                         <input type="number" class="form-control" id="quantite" name="quantite" 
                                value="{{ old('quantite', $stock->quantite) }}" min="0" step="1" required>
-                        <div class="form-text">QuantitÃ© actuelle disponible</div>
+                        <div class="form-text">Quantité actuelle disponible</div>
                     </div>
 
                     <div class="form-group">
                         <label for="seuil_alerte" class="form-label">Seuil d'alerte *</label>
                         <input type="number" class="form-control" id="seuil_alerte" name="seuil_alerte" 
                                value="{{ old('seuil_alerte', $stock->seuil_alerte) }}" min="0" step="1" required>
-                        <div class="form-text">Alerte quand le stock est infÃ©rieur ou Ã©gal Ã  cette valeur</div>
+                        <div class="form-text">Alerte quand le stock est inférieur ou égal à cette valeur</div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="unite" class="form-label">UnitÃ© de mesure</label>
+                    <label for="unite" class="form-label">Unité de mesure</label>
                     <input type="text" class="form-control" id="unite" name="unite" 
-                           value="{{ old('unite', $stock->unite) }}" placeholder="piÃ¨ces, kg, litres...">
-                    <div class="form-text">UnitÃ© de mesure (ex: piÃ¨ces, kg, litres, boÃ®tes)</div>
+                           value="{{ old('unite', $stock->unite) }}" placeholder="pièces, kg, litres...">
+                    <div class="form-text">Unité de mesure (ex: pièces, kg, litres, boîtes)</div>
                 </div>
 
                 <div class="form-group">
@@ -261,7 +261,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="prix_unitaire" class="form-label">Prix unitaire (â‚¬)</label>
+                    <label for="prix_unitaire" class="form-label">Prix unitaire (€)</label>
                     <input type="number" class="form-control" id="prix_unitaire" name="prix_unitaire" 
                            value="{{ old('prix_unitaire', $stock->prix_unitaire) }}" min="0" step="0.01">
                     <div class="form-text">Prix d'achat unitaire</div>
@@ -271,25 +271,25 @@
                     <label for="date_expiration" class="form-label">Date d'expiration</label>
                     <input type="date" class="form-control" id="date_expiration" name="date_expiration" 
                            value="{{ old('date_expiration', $stock->date_expiration ? \Carbon\Carbon::parse($stock->date_expiration)->format('Y-m-d') : '') }}">
-                    <div class="form-text">Date de pÃ©remption si applicable</div>
+                    <div class="form-text">Date de péremption si applicable</div>
                 </div>
 
                 <div class="form-group">
                     <label for="emplacement" class="form-label">Emplacement</label>
                     <input type="text" class="form-control" id="emplacement" name="emplacement" 
                            value="{{ old('emplacement', $stock->emplacement) }}">
-                    <div class="form-text">Localisation dans le stock (ex: Armoire A, Ã‰tage 2)</div>
+                    <div class="form-text">Localisation dans le stock (ex: Armoire A, Étage 2)</div>
                 </div>
 
                 <div class="form-group">
                     <label for="notes" class="form-label">Notes</label>
                     <textarea class="form-control" id="notes" name="notes" rows="4">{{ old('notes', $stock->notes) }}</textarea>
-                    <div class="form-text">Informations supplÃ©mentaires</div>
+                    <div class="form-text">Informations supplémentaires</div>
                 </div>
 
                 <div style="text-align: center; margin-top: 2rem;">
                     <button type="submit" class="btn-primary">
-                        ðŸ’¾ Mettre Ã  jour le stock
+                        ðŸ’¾ Mettre à jour le stock
                     </button>
                 </div>
             </form>
@@ -306,13 +306,13 @@
                 
                 if (parseInt(quantite) < 0) {
                     e.preventDefault();
-                    alert('La quantitÃ© ne peut pas Ãªtre nÃ©gative');
+                    alert('La quantité ne peut pas être négative');
                     return false;
                 }
                 
                 if (parseInt(seuil) < 0) {
                     e.preventDefault();
-                    alert('Le seuil d\'alerte ne peut pas Ãªtre nÃ©gatif');
+                    alert('Le seuil d\'alerte ne peut pas être négatif');
                     return false;
                 }
             });
@@ -337,7 +337,7 @@
                 }
             }
 
-            // Ã‰couter les changements de quantitÃ© et seuil
+            // Écouter les changements de quantité et seuil
             document.getElementById('quantite').addEventListener('input', updateStatut);
             document.getElementById('seuil_alerte').addEventListener('input', updateStatut);
             

@@ -27,9 +27,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Log des requÃªtes SQL lentes
+        // Log des requêtes SQL lentes
         DB::whenQueryingForLongerThan(500, function ($connection, $query) {
-            Log::warning("Query lente dÃ©tectÃ©e", [
+            Log::warning("Query lente détectée", [
                 'connection' => $connection->getName(),
                 'query' => $query->sql,
                 'bindings' => $query->bindings,

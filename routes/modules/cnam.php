@@ -8,4 +8,8 @@ Route::prefix('cnam')->name('cnam.')->group(function () {
     Route::get('/create', [CnamController::class, 'create'])->name('create');
     Route::post('/', [CnamController::class, 'store'])->name('store');
     Route::post('/{id}/transmettre', [CnamController::class, 'transmettre'])->name('transmettre');
+
+    // Saisie des soins (BS)
+    Route::get('/soins/create', [CnamController::class, 'createSoin'])->name('soins.create');
+    Route::post('/soins', [CnamController::class, 'storeSoin'])->name('soins.store');
 });

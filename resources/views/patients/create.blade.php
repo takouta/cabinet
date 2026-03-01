@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="prenom" class="form-label">PrÃ©nom *</label>
+                        <label for="prenom" class="form-label">Prénom *</label>
                         <input type="text" class="form-control @error('prenom') is-invalid @enderror" 
                                id="prenom" name="prenom" value="{{ old('prenom') }}" required>
                         @error('prenom')
@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="telephone" class="form-label">TÃ©lÃ©phone *</label>
+                        <label for="telephone" class="form-label">Téléphone *</label>
                         <input type="text" class="form-control @error('telephone') is-invalid @enderror" 
                                id="telephone" name="telephone" value="{{ old('telephone') }}" required>
                         @error('telephone')
@@ -76,7 +76,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="antecedents_medicaux" class="form-label">AntÃ©cÃ©dents MÃ©dicaux</label>
+                <label for="antecedents_medicaux" class="form-label">Antécédents Médicaux</label>
                 <textarea class="form-control @error('antecedents_medicaux') is-invalid @enderror" 
                           id="antecedents_medicaux" name="antecedents_medicaux" rows="3">{{ old('antecedents_medicaux') }}</textarea>
                 @error('antecedents_medicaux')
@@ -85,11 +85,11 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <a href="{{ route('patients.index') }}" class="btn btn-secondary">
+                <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Retour
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>CrÃ©er le Patient
+                    <i class="fas fa-save me-2"></i>Créer le Patient
                 </button>
             </div>
         </form>

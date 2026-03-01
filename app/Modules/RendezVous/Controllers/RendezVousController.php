@@ -13,13 +13,15 @@ class RendezVousController extends Controller
     public function index()
     {
         $rendezvous = RendezVous::with('patient')->orderBy('date_heure', 'desc')->get();
-        return view('rendezvous.index', compact('rendezvous'));
+        $routePrefix = $this->getRoutePrefix();
+        return view('rendezvous.index', compact('rendezvous', 'routePrefix'));
     }
 
     public function create()
     {
         $patients = Patient::orderBy('nom')->get();
-        return view('rendezvous.create', compact('patients'));
+        $routePrefix = $this->getRoutePrefix();
+        return view('rendezvous.create', compact('patients', 'routePrefix'));
     }
 
     public function store(Request $request)
@@ -36,18 +38,20 @@ class RendezVousController extends Controller
 
         RendezVous::create($validated);
 
-        return redirect()->route('rendezvous.index')->with('success', 'Rendez-vous cree avec succes!');
+        return redirect()->route($this->getRoutePrefix() . '.rendezvous.index')->with('success', 'Rendez-vous cree avec succes!');
     }
 
     public function show(RendezVous $rendezvous)
     {
-        return view('rendezvous.show', compact('rendezvous'));
+        $routePrefix = $this->getRoutePrefix();
+        return view('rendezvous.show', compact('rendezvous', 'routePrefix'));
     }
 
     public function edit(RendezVous $rendezvous)
     {
         $patients = Patient::orderBy('nom')->get();
-        return view('rendezvous.edit', compact('rendezvous', 'patients'));
+        $routePrefix = $this->getRoutePrefix();
+        return view('rendezvous.edit', compact('rendezvous', 'patients', 'routePrefix'));
     }
 
     public function update(Request $request, RendezVous $rendezvous)
@@ -62,13 +66,40 @@ class RendezVousController extends Controller
 
         $rendezvous->update($validated);
 
-        return redirect()->route('rendezvous.index')->with('success', 'Rendez-vous modifie avec succes!');
+        return redirect()->route($this->getRoutePrefix() . '.rendezvous.index')->with('success', 'Rendez-vous modifie avec succes!');
     }
 
     public function destroy(RendezVous $rendezvous)
     {
+        $prefix = $this->getRoutePrefix();
         $rendezvous->delete();
 
-        return redirect()->route('rendezvous.index')->with('success', 'Rendez-vous supprime avec succes!');
+        return redirect()->route($prefix . '.rendezvous.index')->with('success', 'Rendez-vous supprime avec succes!');
+    }
+
+    /**
+     * Determine the route prefix based on the current route name or authenticated user role.
+     */
+    private function getRoutePrefix()
+    {
+        $routeName = request()->route()->getName();
+        if ($routeName && strpos($routeName, '.') !== false) {
+            return explode('.', $routeName)[0];
+        }
+
+        $user = Auth::user();
+        if (!$user) return 'patient';
+
+        $rolePrefixes = [
+            'admin_cabinet' => 'admin',
+            'admin' => 'admin',
+            'medecin' => 'medecin',
+            'dentiste' => 'medecin',
+            'secretaire' => 'secretaire',
+            'patient' => 'patient',
+            'assistant' => 'patient',
+        ];
+
+        return $rolePrefixes[$user->role] ?? 'patient';
     }
 }

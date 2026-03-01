@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dashboard') - DentalCare Pro</title>
+    <title>@yield('title', 'Dashboard') - SmileCaire</title>
 
     <link rel="icon" type="image/png" href="{{ asset('images/dental-icon.png') }}">
 
@@ -71,7 +71,7 @@
 
                         <a href="{{ route($dashboardRoute) }}" class="flex ml-2 md:mr-24">
                             <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                                <span class="text-blue-600">Dental</span>Care<span class="text-blue-600">Pro</span>
+                                <span class="text-blue-600">Smile</span>Caire
                             </span>
                         </a>
                     </div>

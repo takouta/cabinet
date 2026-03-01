@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter au Stock - SmileCare</title>
     <style>
-        /* Reprendre le mÃªme style que edit.blade.php */
+        /* Reprendre le même style que edit.blade.php */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f5f5f5; min-height: 100vh; }
         .navbar { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
@@ -39,11 +39,11 @@
         <div class="nav-links">
             <a href="{{ route('dashboard') }}">Tableau de Bord</a>
             <a href="{{ route('stock.index') }}">Stock</a>
-            <a href="{{ route('patients.index') }}">Patients</a>
-            <a href="{{ route('rendezvous.index') }}">Rendez-vous</a>
+            <a href="{{ route('admin.patients.index') }}">Patients</a>
+            <a href="{{ route('admin.rendezvous.index') }}">Rendez-vous</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn-logout">DÃ©connexion</button>
+                <button type="submit" class="btn-logout">Déconnexion</button>
             </form>
         </div>
     </nav>
@@ -51,7 +51,7 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h1 class="card-title">Ajouter du matÃ©riel au stock</h1>
+                <h1 class="card-title">Ajouter du matériel au stock</h1>
                 <a href="{{ route('stock.index') }}" class="btn-back">â† Retour au stock</a>
             </div>
 
@@ -69,33 +69,33 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="nom" class="form-label">Nom du matÃ©riel *</label>
+                    <label for="nom" class="form-label">Nom du matériel *</label>
                     <input type="text" class="form-control" id="nom" name="nom" 
-                           value="{{ old('nom') }}" required placeholder="Ex: AnesthÃ©sique local, Comprime, Gants...">
-                    <div class="form-text">Nom complet du matÃ©riel ou produit</div>
+                           value="{{ old('nom') }}" required placeholder="Ex: Anesthésique local, Comprime, Gants...">
+                    <div class="form-text">Nom complet du matériel ou produit</div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="quantite" class="form-label">QuantitÃ© initiale *</label>
+                        <label for="quantite" class="form-label">Quantité initiale *</label>
                         <input type="number" class="form-control" id="quantite" name="quantite" 
                                value="{{ old('quantite', 0) }}" min="0" step="1" required>
-                        <div class="form-text">QuantitÃ© de dÃ©part en stock</div>
+                        <div class="form-text">Quantité de départ en stock</div>
                     </div>
 
                     <div class="form-group">
                         <label for="seuil_alerte" class="form-label">Seuil d'alerte *</label>
                         <input type="number" class="form-control" id="seuil_alerte" name="seuil_alerte" 
                                value="{{ old('seuil_alerte', 5) }}" min="0" step="1" required>
-                        <div class="form-text">Alerte quand le stock est infÃ©rieur ou Ã©gal</div>
+                        <div class="form-text">Alerte quand le stock est inférieur ou égal</div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="unite" class="form-label">UnitÃ© de mesure</label>
+                    <label for="unite" class="form-label">Unité de mesure</label>
                     <input type="text" class="form-control" id="unite" name="unite" 
-                           value="{{ old('unite') }}" placeholder="piÃ¨ces, kg, litres, boÃ®tes...">
-                    <div class="form-text">UnitÃ© de mesure (ex: piÃ¨ces, kg, litres, boÃ®tes)</div>
+                           value="{{ old('unite') }}" placeholder="pièces, kg, litres, boîtes...">
+                    <div class="form-text">Unité de mesure (ex: pièces, kg, litres, boîtes)</div>
                 </div>
 
                 <div class="form-group">
@@ -107,7 +107,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="prix_unitaire" class="form-label">Prix unitaire (â‚¬)</label>
+                        <label for="prix_unitaire" class="form-label">Prix unitaire (€)</label>
                         <input type="number" class="form-control" id="prix_unitaire" name="prix_unitaire" 
                                value="{{ old('prix_unitaire') }}" min="0" step="0.01">
                         <div class="form-text">Prix d'achat unitaire</div>
@@ -117,22 +117,22 @@
                         <label for="date_expiration" class="form-label">Date d'expiration</label>
                         <input type="date" class="form-control" id="date_expiration" name="date_expiration" 
                                value="{{ old('date_expiration') }}">
-                        <div class="form-text">Date de pÃ©remption si applicable</div>
+                        <div class="form-text">Date de péremption si applicable</div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="emplacement" class="form-label">Emplacement</label>
                     <input type="text" class="form-control" id="emplacement" name="emplacement" 
-                           value="{{ old('emplacement') }}" placeholder="Ex: Armoire A, Ã‰tage 2, Salle 4...">
+                           value="{{ old('emplacement') }}" placeholder="Ex: Armoire A, Étage 2, Salle 4...">
                     <div class="form-text">Localisation dans le stock</div>
                 </div>
 
                 <div class="form-group">
                     <label for="notes" class="form-label">Notes</label>
                     <textarea class="form-control" id="notes" name="notes" rows="4" 
-                              placeholder="Informations supplÃ©mentaires...">{{ old('notes') }}</textarea>
-                    <div class="form-text">Informations supplÃ©mentaires (rÃ©fÃ©rence, lot, etc.)</div>
+                              placeholder="Informations supplémentaires...">{{ old('notes') }}</textarea>
+                    <div class="form-text">Informations supplémentaires (référence, lot, etc.)</div>
                 </div>
 
                 <div style="text-align: center; margin-top: 2rem;">

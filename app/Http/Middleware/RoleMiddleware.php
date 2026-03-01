@@ -24,16 +24,16 @@ class RoleMiddleware
                 'secretaire' => 'secretaire.dashboard',
                 'patient' => 'patient.dashboard',
                 'fournisseur' => 'fournisseur.dashboard',
-                // Compatibilite avec les roles deja presents
-                'admin' => 'admin.dashboard',
-                'dentiste' => 'medecin.dashboard',
-                'assistant' => 'patient.dashboard',
             ];
 
-            $defaultRoute = $roleToRoute[$user->role] ?? 'dashboard';
+            if (!isset($roleToRoute[$user->role])) {
+                Auth::logout();
+                return redirect()->route('login')
+                    ->with('error', 'Votre rôle n\'est pas reconnu. Veuillez contacter l\'administrateur.');
+            }
 
-            return redirect()->route($defaultRoute)
-                ->with('error', 'Vous n\'avez pas acces a cette page.');
+            return redirect()->route($roleToRoute[$user->role])
+                ->with('error', 'Vous n\'avez pas accès à cette page.');
         }
 
         return $next($request);

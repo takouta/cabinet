@@ -1,62 +1,70 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
+
+@section('title', 'Nouveau Bordereau')
 
 @section('content')
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h1 class="h3 font-weight-bold text-primary">Nouveau Bordereau de Soins</h1>
-            <p class="text-muted">Sélectionnez les actes effectués pour générer le BS</p>
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">Nouveau Bordereau de Soins</h1>
+            <p class="text-sm text-gray-500">Sélectionnez les actes effectués pour générer le BS.</p>
         </div>
+        @php
+            $currentPrefix = str_contains(request()->route()->getName(), 'admin') ? 'admin.' : (str_contains(request()->route()->getName(), 'medecin') ? 'medecin.' : '');
+        @endphp
+        <a href="{{ route($currentPrefix . 'cnam.index') }}" class="text-gray-600 hover:text-gray-800 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>Retour à la liste
+        </a>
     </div>
 
-    <form action="{{ route('cnam.store') }}" method="POST">
+    <form action="{{ route($currentPrefix . 'cnam.store') }}" method="POST">
         @csrf
-        <div class="card border-0 shadow-sm overflow-hidden mb-4" style="border-radius: 15px;">
-            <div class="card-header bg-white py-3">
-                <h5 class="mb-0 font-weight-bold"><i class="fas fa-list mr-2 text-primary"></i> Actes non facturés à la CNAM</h5>
+        <div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wider">Actes non facturés à la CNAM</h2>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="checkAll" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <label for="checkAll" class="text-xs text-gray-500 font-medium cursor-pointer">Tout sélectionner</label>
+                </div>
             </div>
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left">
+                    <thead class="bg-white text-gray-500 uppercase text-xs font-semibold border-b">
                         <tr>
-                            <th class="px-4 border-0" style="width: 50px;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="checkAll">
-                                    <label class="custom-control-label" for="checkAll"></label>
-                                </div>
-                            </th>
-                            <th class="border-0">Date</th>
-                            <th class="border-0">Patient</th>
-                            <th class="border-0">Acte</th>
-                            <th class="border-0 text-right px-4">Part CNAM</th>
+                            <th class="px-6 py-3 w-12"></th>
+                            <th class="px-6 py-3">Date</th>
+                            <th class="px-6 py-3">Patient</th>
+                            <th class="px-6 py-3">Acte</th>
+                            <th class="px-6 py-3 text-right">Part CNAM</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-100">
                         @forelse($soinsDisponibles as $soin)
-                        <tr>
-                            <td class="px-4">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="soin_ids[]" value="{{ $soin->id }}" class="custom-control-input soin-checkbox" id="soin-{{ $soin->id }}" data-montant="{{ $soin->part_cnam }}">
-                                    <label class="custom-control-label" for="soin-{{ $soin->id }}"></label>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" name="soin_ids[]" value="{{ $soin->id }}" 
+                                    class="soin-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    data-montant="{{ $soin->part_cnam }}">
+                            </td>
+                            <td class="px-6 py-4 text-gray-600">{{ \Carbon\Carbon::parse($soin->date_soin)->format('d/m/Y') }}</td>
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ $soin->patient->nom_complet }}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <span class="px-2 py-0.5 rounded bg-gray-100 text-gray-600 text-[10px] font-bold mr-2 uppercase border border-gray-200">{{ $soin->acte_code }}</span>
+                                    <span class="text-gray-700">{{ $soin->designation }}</span>
                                 </div>
                             </td>
-                            <td>{{ $soin->date_soin }}</td>
-                            <td class="font-weight-bold">
-                                {{ $soin->patient->nom_complet }}
-                            </td>
-                            <td>
-                                <span class="badge badge-light border text-muted px-2 py-1 mr-2">{{ $soin->acte_code }}</span>
-                                {{ $soin->designation }}
-                            </td>
-                            <td class="text-right px-4 font-weight-bold text-primary">
+                            <td class="px-6 py-4 text-right font-semibold text-blue-600">
                                 {{ number_format($soin->part_cnam, 3, ',', ' ') }} DT
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="py-5 text-center text-muted">
-                                <div class="mb-3"><i class="fas fa-check-circle fa-3x opacity-25"></i></div>
-                                Tous les actes sont déjà inclus dans des bordereaux.
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-check-circle fa-3x text-gray-100 mb-4"></i>
+                                    <p class="text-gray-500">Tous les actes sont déjà inclus dans des bordereaux.</p>
+                                </div>
                             </td>
                         </tr>
                         @endforelse
@@ -65,23 +73,24 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-4 ml-auto">
-                <div class="card border-0 shadow-sm bg-primary text-white" style="border-radius: 15px;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span>Actes sélectionnés :</span>
-                            <span id="selectedCount" class="badge badge-light">0</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="mb-0">Total CNAM :</h5>
-                            <h4 class="mb-0 font-weight-bold"><span id="totalCnam">0,000</span> DT</h4>
-                        </div>
-                        <button type="submit" class="btn btn-block btn-white text-primary font-weight-bold rounded-pill py-2 shadow-sm" id="btnSubmit" disabled>
-                            <i class="fas fa-file-invoice mr-2"></i> Générer le Bordereau
-                        </button>
+        <div class="flex justify-end">
+            <div class="bg-gray-800 rounded-2xl shadow-lg p-6 w-full md:w-96 text-white transform hover:scale-[1.02] transition-transform">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-400 text-sm">Actes sélectionnés</span>
+                    <span id="selectedCount" class="bg-blue-600 text-xs font-bold px-2.5 py-1 rounded-full">0</span>
+                </div>
+                <div class="flex justify-between items-end mb-6">
+                    <span class="text-gray-400 text-sm">Total CNAM</span>
+                    <div class="text-right">
+                        <span id="totalCnam" class="text-2xl font-bold">0,000</span>
+                        <span class="text-xs text-gray-400 ml-1">DT</span>
                     </div>
                 </div>
+                <button type="submit" id="btnSubmit" disabled
+                    class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-file-invoice"></i>
+                    Générer le Bordereau
+                </button>
             </div>
         </div>
     </form>
@@ -102,7 +111,7 @@
             checkboxes.forEach(cb => {
                 if (cb.checked) {
                     count++;
-                    total += parseFloat(cb.dataset.montant);
+                    total += parseFloat(cb.dataset.montant || 0);
                 }
             });
 
@@ -111,12 +120,14 @@
             btnSubmit.disabled = count === 0;
         }
 
-        checkAll.addEventListener('change', function() {
-            checkboxes.forEach(cb => {
-                cb.checked = checkAll.checked;
+        if (checkAll) {
+            checkAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => {
+                    cb.checked = checkAll.checked;
+                });
+                updateTotal();
             });
-            updateTotal();
-        });
+        }
 
         checkboxes.forEach(cb => {
             cb.addEventListener('change', updateTotal);
@@ -124,10 +135,4 @@
     });
 </script>
 @endpush
-
-<style>
-    .btn-white { background-color: #ffffff; border: none; }
-    .btn-white:hover { background-color: #f8f9fa; }
-    .custom-control-input:checked ~ .custom-control-label::before { background-color: #0d6efd; border-color: #0d6efd; }
-</style>
 @endsection

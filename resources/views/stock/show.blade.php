@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'DÃ©tails Produit')
+@section('title', 'Détails Produit')
 
 @section('content')
 <div class="row">
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h4 class="mb-0"><i class="fas fa-box me-2"></i>DÃ©tails du Produit</h4>
+                <h4 class="mb-0"><i class="fas fa-box me-2"></i>Détails du Produit</h4>
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
@@ -21,14 +21,14 @@
                     </tr>
                     @if(isset($stock->categorie) && $stock->categorie)
                     <tr>
-                        <th>CatÃ©gorie:</th>
+                        <th>Catégorie:</th>
                         <td>
                             <span class="badge bg-secondary">{{ $stock->categorie }}</span>
                         </td>
                     </tr>
                     @endif
                     <tr>
-                        <th>QuantitÃ©:</th>
+                        <th>Quantité:</th>
                         <td>
                             <span class="badge bg-{{ $stock->quantite <= $stock->seuil_alerte ? 'danger' : 'success' }} fs-6">
                                 {{ $stock->quantite }} {{ $stock->unite_mesure }}
@@ -40,7 +40,7 @@
                         <td>{{ $stock->seuil_alerte }} {{ $stock->unite_mesure }}</td>
                     </tr>
                     <tr>
-                        <th>UnitÃ© de mesure:</th>
+                        <th>Unité de mesure:</th>
                         <td>{{ $stock->unite_mesure }}</td>
                     </tr>
                     <tr>
@@ -49,7 +49,7 @@
                             @if($stock->prix_unitaire)
                                 {{ number_format($stock->prix_unitaire, 3, ',', ' ') }} DT
                             @else
-                                <span class="text-muted">Non dÃ©fini</span>
+                                <span class="text-muted">Non défini</span>
                             @endif
                         </td>
                     </tr>
@@ -66,11 +66,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>CrÃ©Ã© le:</th>
+                        <th>Créé le:</th>
                         <td>{{ $stock->created_at->format('d/m/Y H:i') }}</td>
                     </tr>
                     <tr>
-                        <th>ModifiÃ© le:</th>
+                        <th>Modifié le:</th>
                         <td>{{ $stock->updated_at->format('d/m/Y H:i') }}</td>
                     </tr>
                 </table>
@@ -85,7 +85,7 @@
                     <form action="{{ route('stock.destroy', $stock) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('ÃŠtes-vous sÃ»r de vouloir supprimer ce produit?')">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?')">
                             <i class="fas fa-trash me-2"></i>Supprimer
                         </button>
                     </form>
@@ -105,7 +105,7 @@
                     <div class="alert alert-danger">
                         <i class="fas fa-times-circle fa-3x mb-3"></i>
                         <h4>RUPTURE DE STOCK</h4>
-                        <p class="mb-0">Commande urgente nÃ©cessaire</p>
+                        <p class="mb-0">Commande urgente nécessaire</p>
                     </div>
                 @elseif($stock->quantite <= $stock->seuil_alerte)
                     <div class="alert alert-warning">
@@ -161,7 +161,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>TÃ©lÃ©phone:</th>
+                        <th>Téléphone:</th>
                         <td>
                             <a href="tel:{{ $stock->fournisseur->telephone }}" class="text-decoration-none">
                                 {{ $stock->fournisseur->telephone }}
@@ -170,7 +170,7 @@
                     </tr>
                     @if($stock->fournisseur->specialite)
                     <tr>
-                        <th>SpÃ©cialitÃ©:</th>
+                        <th>Spécialité:</th>
                         <td>
                             <span class="badge bg-info">{{ $stock->fournisseur->specialite }}</span>
                         </td>
@@ -196,7 +196,7 @@
             <div class="card-body text-center">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle fa-2x mb-3"></i>
-                    <p class="mb-0">Aucun fournisseur associÃ© Ã  ce produit</p>
+                    <p class="mb-0">Aucun fournisseur associé à ce produit</p>
                 </div>
                 <a href="{{ route('stock.edit', $stock) }}" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-edit me-1"></i>Assigner un fournisseur

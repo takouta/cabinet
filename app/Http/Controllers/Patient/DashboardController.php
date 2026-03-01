@@ -4,8 +4,8 @@
 namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
-use App\Models\Patient; // Correction: App\Models\Patient au lieu de App\Modules\Patient\Models\Patient
-use App\Models\RendezVous; // Correction: App\Models\RendezVous
+use App\Models\Patient; 
+use App\Models\RendezVous; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -34,11 +34,6 @@ class DashboardController extends Controller
             ]);
         }
         
-        // Option 2: Création automatique (si vous préférez)
-        // if (!$patient) {
-        //     $patient = $this->createPatientFromUser($user);
-        // }
-
         // Récupérer les prochains rendez-vous
         $prochains_rdv = RendezVous::with(['medecin' => function($query) {
                 $query->with('user'); // Charger les infos du médecin
@@ -70,6 +65,26 @@ class DashboardController extends Controller
         ]);
 
         return view('patient.dashboard', compact('patient', 'prochains_rdv', 'stats'));
+    }
+
+    /**
+     * Afficher l'historique médical du patient
+     */
+    public function historique()
+    {
+        $user = Auth::user();
+        $patient = Patient::where('user_id', $user->id)->first();
+
+        if (!$patient) {
+            return redirect()->route('patient.dashboard')->with('error', 'Profil patient non trouvé.');
+        }
+
+        $rendezvous = RendezVous::where('patient_id', $patient->id)
+            ->with(['medecin.user'])
+            ->orderBy('date_heure', 'desc')
+            ->paginate(15);
+
+        return view('patient.historique', compact('patient', 'rendezvous'));
     }
 
     /**

@@ -38,7 +38,7 @@
             <input type="text" name="search" value="{{ request('search') }}" class="border rounded-lg px-3 py-2" placeholder="Rechercher...">
             <select name="role" class="border rounded-lg px-3 py-2">
                 <option value="">Tous les roles</option>
-                @foreach(['super_admin','admin_cabinet','admin','medecin','dentiste','secretaire','assistant','patient','fournisseur'] as $role)
+                @foreach(['admin_cabinet','admin'] as $role)
                     <option value="{{ $role }}" @selected(request('role') === $role)>{{ ucfirst(str_replace('_', ' ', $role)) }}</option>
                 @endforeach
             </select>
@@ -89,6 +89,9 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                <button onclick="toggleUser({{ $user->id }})" class="text-{{ $user->actif ? 'orange' : 'green' }}-600 hover:text-{{ $user->actif ? 'orange' : 'green' }}-800" title="{{ $user->actif ? 'Desactiver' : 'Activer' }}">
+                                    <i class="fas fa-{{ $user->actif ? 'user-slash' : 'user-check' }}"></i>
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -102,4 +105,31 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleUser(id) {
+    if (confirm('Voulez-vous changer le statut de cet utilisateur ?')) {
+        fetch(`/super-admin/users/${id}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Une erreur est survenue');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Erreur reseau');
+        });
+    }
+}
+</script>
 @endsection

@@ -247,11 +247,11 @@
         <div class="nav-links">
             <a href="{{ route('dashboard') }}">Tableau de Bord</a>
             <a href="{{ route('stock.index') }}">Stock</a>
-            <a href="{{ route('patients.index') }}">Patients</a>
-            <a href="{{ route('rendezvous.index') }}">Rendez-vous</a>
+            <a href="{{ route('admin.patients.index') }}">Patients</a>
+            <a href="{{ route('admin.rendezvous.index') }}">Rendez-vous</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn-logout">DÃ©connexion</button>
+                <button type="submit" class="btn-logout">Déconnexion</button>
             </form>
         </div>
     </nav>
@@ -261,10 +261,10 @@
         <div class="card">
             <div class="card-header">
                 <h1 class="card-title">ðŸ“¦ Gestion du Stock</h1>
-                <a href="{{ route('stock.create') }}" class="btn-primary">+ Ajouter du matÃ©riel</a>
+                <a href="{{ route('stock.create') }}" class="btn-primary">+ Ajouter du matériel</a>
             </div>
 
-            <!-- Messages de succÃ¨s -->
+            <!-- Messages de succès -->
             @if(session('success'))
                 <div class="alert-success">
                     {{ session('success') }}
@@ -277,7 +277,7 @@
                     <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>QuantitÃ©</th>
+                            <th>Quantité</th>
                             <th>Seuil d'alerte</th>
                             <th>Statut</th>
                             <th>Fournisseur</th>
@@ -313,7 +313,7 @@
                                 <td>{{ $stock->fournisseur->nom ?? 'N/A' }}</td>
                                 <td>
                                     @if($stock->prix_unitaire)
-                                        {{ number_format($stock->prix_unitaire, 2) }} â‚¬
+                                        {{ number_format($stock->prix_unitaire, 2) }} €
                                     @else
                                         N/A
                                     @endif
@@ -324,7 +324,7 @@
                                         <form action="{{ route('stock.destroy', $stock->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-sm btn-delete" onclick="return confirm('ÃŠtes-vous sÃ»r de vouloir supprimer ce matÃ©riel?')">ðŸ—‘ï¸</button>
+                                            <button type="submit" class="btn-sm btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce matériel?')">ðŸ—‘ï¸</button>
                                         </form>
                                     </div>
                                 </td>
@@ -335,16 +335,16 @@
             @else
                 <div class="empty-state">
                     <div>ðŸ“¦</div>
-                    <h3>Aucun matÃ©riel en stock</h3>
-                    <p>Commencez par ajouter votre premier matÃ©riel</p>
-                    <a href="{{ route('stock.create') }}" class="btn-primary" style="margin-top: 1rem;">Ajouter du matÃ©riel</a>
+                    <h3>Aucun matériel en stock</h3>
+                    <p>Commencez par ajouter votre premier matériel</p>
+                    <a href="{{ route('stock.create') }}" class="btn-primary" style="margin-top: 1rem;">Ajouter du matériel</a>
                 </div>
             @endif
         </div>
     </div>
 
     <script>
-        // Script pour amÃ©liorer l'interface
+        // Script pour améliorer l'interface
         document.addEventListener('DOMContentLoaded', function() {
             // Ajouter des tooltips pour les boutons
             const buttons = document.querySelectorAll('.btn-sm');

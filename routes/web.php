@@ -7,14 +7,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\SmsController;
 
 // Contrôleurs d'authentification
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Modules\Auth\Controllers\LoginController;
+use App\Modules\Auth\Controllers\RegisterController;
+use App\Modules\Auth\Controllers\ForgotPasswordController;
+use App\Modules\Auth\Controllers\ResetPasswordController;
 
 // Contrôleurs par rôle
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -81,13 +82,9 @@ Route::middleware(['auth'])->group(function () {
             'secretaire' => 'secretaire.dashboard',
             'patient' => 'patient.dashboard',
             'fournisseur' => 'fournisseur.dashboard',
-            // Anciens rôles pour compatibilité
-            'admin' => 'admin.dashboard',
-            'dentiste' => 'medecin.dashboard',
-            'assistant' => 'secretaire.dashboard',
         ];
         
-        $route = $routes[$role] ?? 'admin.dashboard';
+        $route = $routes[$role] ?? 'patient.dashboard';  // Sécurité : rôle inconnu → patient
         
         return redirect()->route($route);
     })->name('dashboard');
@@ -151,9 +148,9 @@ Route::middleware(['auth'])->group(function () {
     // ===========================================
     // ADMIN CABINET
     // ===========================================
-    Route::middleware(['role:admin_cabinet,admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:admin_cabinet'])->prefix('admin')->group(function () {
         
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         
         // Inclusion des modules (avec vérification d'existence)
         $moduleFiles = [
@@ -165,7 +162,13 @@ Route::middleware(['auth'])->group(function () {
         
         foreach ($moduleFiles as $module => $path) {
             if (file_exists($path)) {
-                require $path;
+                if (in_array($module, ['patient', 'rendezvous', 'cnam'])) {
+                    Route::name('admin.')->group(function() use ($path) {
+                        require $path;
+                    });
+                } else {
+                    require $path;
+                }
             }
         }
         
@@ -181,20 +184,21 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('consultations', ConsultationController::class);
         
         // Gestion utilisateurs (pour admin cabinet)
-        Route::prefix('users')->name('users.')->group(function () {
+        Route::prefix('users')->name('admin.users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::get('/create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
             Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
             Route::put('/{user}', [UserController::class, 'update'])->name('update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('toggle-status');
         });
     });
     
     // ===========================================
     // MEDECIN
     // ===========================================
-    Route::middleware(['role:medecin,dentiste'])->prefix('medecin')->name('medecin.')->group(function () {
+    Route::middleware(['role:medecin'])->prefix('medecin')->name('medecin.')->group(function () {
         Route::get('/dashboard', [MedecinDashboardController::class, 'index'])->name('dashboard');
         
         // Module CNAM pour médecin
@@ -206,7 +210,7 @@ Route::middleware(['auth'])->group(function () {
     // ===========================================
     // SECRETAIRE
     // ===========================================
-    Route::middleware(['role:secretaire,assistant'])->prefix('secretaire')->name('secretaire.')->group(function () {
+    Route::middleware(['role:secretaire'])->prefix('secretaire')->name('secretaire.')->group(function () {
         Route::get('/dashboard', [SecretaireDashboardController::class, 'index'])->name('dashboard');
         
         // Inclure les modules communs si nécessaire
@@ -218,8 +222,14 @@ Route::middleware(['auth'])->group(function () {
     // ===========================================
     // PATIENT
     // ===========================================
-    Route::middleware(['role:patient,assistant'])->prefix('patient')->name('patient.')->group(function () {
+    Route::middleware(['role:patient'])->prefix('patient')->name('patient.')->group(function () {
         Route::get('/dashboard', [PatientDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/historique', [PatientDashboardController::class, 'historique'])->name('historique');
+        
+        // Modules pour patients
+        if (file_exists(__DIR__.'/modules/rendezvous.php')) {
+            require __DIR__.'/modules/rendezvous.php';
+        }
     });
     
     // ===========================================
@@ -234,7 +244,9 @@ Route::middleware(['auth'])->group(function () {
     // ===========================================
     Route::prefix('api')->name('api.')->group(function () {
         Route::get('/stats', [DashboardController::class, 'getChartData'])->name('stats');
-        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+        if (class_exists(\App\Http\Controllers\NotificationController::class)) {
+            Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
+        }
     });
 });
 

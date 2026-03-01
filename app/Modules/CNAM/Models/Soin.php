@@ -13,12 +13,15 @@ class Soin extends Model
         'dentiste_id',
         'bordereau_id',
         'acte_code',
+        'dent',
+        'cotation',
         'designation',
         'date_soin',
         'montant',
         'part_cnam',
         'part_patient',
-        'statut'
+        'statut',
+        'type_soin'
     ];
 
     public function patient()

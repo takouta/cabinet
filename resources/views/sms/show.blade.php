@@ -1,28 +1,28 @@
 @extends('layouts.app')
 
-@section('title', 'DÃ©tails sms')
+@section('title', 'Détails sms')
 
 @section('content')
 <div class="row">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h4 class="mb-0"><i class="fas fa-sms me-2"></i>DÃ©tails du Message</h4>
+                <h4 class="mb-0"><i class="fas fa-sms me-2"></i>Détails du Message</h4>
             </div>
             <div class="card-body">
                 <!-- Carte du message -->
                 <div class="message-card border rounded p-4 mb-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <small class="text-muted">Ã€:</small>
-                            <h6 class="mb-1">{{ $sms->numero_destinataire ?? 'Non dÃ©fini' }}</h6>
+                            <small class="text-muted">À:</small>
+                            <h6 class="mb-1">{{ $sms->numero_destinataire ?? 'Non défini' }}</h6>
                         </div>
                         <div class="text-end">
                             @php
                                 $statutColors = [
-                                    'envoyÃ©' => 'success',
+                                    'envoyé' => 'success',
                                     'en_attente' => 'warning',
-                                    'Ã©chouÃ©' => 'danger',
+                                    'échoué' => 'danger',
                                     '' => 'secondary'
                                 ];
                                 $typeColors = [
@@ -57,15 +57,15 @@
                         <small class="text-muted">
                             <i class="fas fa-clock me-1"></i>
                             @if($createdAt)
-                                CrÃ©Ã© le {{ $createdAt->format('d/m/Y Ã  H:i') }}
+                                Créé le {{ $createdAt->format('d/m/Y à H:i') }}
                             @else
-                                Date de crÃ©ation non disponible
+                                Date de création non disponible
                             @endif
                             
                             @if($envoyeA)
                                 <br>
                                 <i class="fas fa-paper-plane me-1"></i>
-                                EnvoyÃ© le {{ $envoyeA->format('d/m/Y Ã  H:i') }}
+                                Envoyé le {{ $envoyeA->format('d/m/Y à H:i') }}
                             @endif
                         </small>
                     </div>
@@ -73,7 +73,7 @@
 
                 <div class="d-flex justify-content-between">
                     <a href="{{ route('sms.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Retour Ã  la liste
+                        <i class="fas fa-arrow-left me-2"></i>Retour à la liste
                     </a>
                     <div>
                         @if($statut == 'en_attente')
@@ -85,7 +85,7 @@
                         <form action="{{ route('sms.destroy', $sms) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('ÃŠtes-vous sÃ»r de vouloir supprimer ce SMS?')">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce SMS?')">
                                 <i class="fas fa-trash me-2"></i>Supprimer
                             </button>
                         </form>
@@ -125,14 +125,14 @@
                     </tr>
                     <tr>
                         <th>Destinataire:</th>
-                        <td>{{ $sms->numero_destinataire ?? 'Non dÃ©fini' }}</td>
+                        <td>{{ $sms->numero_destinataire ?? 'Non défini' }}</td>
                     </tr>
                     <tr>
-                        <th>CaractÃ¨res:</th>
+                        <th>Caractères:</th>
                         <td>{{ strlen($sms->message ?? '') }}/500</td>
                     </tr>
                     <tr>
-                        <th>CrÃ©Ã© le:</th>
+                        <th>Créé le:</th>
                         <td>
                             @if($createdAt)
                                 {{ $createdAt->format('d/m/Y H:i') }}
@@ -143,7 +143,7 @@
                     </tr>
                     @if($envoyeA)
                     <tr>
-                        <th>EnvoyÃ© le:</th>
+                        <th>Envoyé le:</th>
                         <td>{{ $envoyeA->format('d/m/Y H:i') }}</td>
                     </tr>
                     @endif
@@ -158,7 +158,7 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="{{ route('sms.create') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('sms.index') }}" class="btn btn-outline-primary">
                         <i class="fas fa-paper-plane me-2"></i>Nouveau SMS
                     </a>
                     <button class="btn btn-outline-warning" onclick="copyMessage()">
@@ -175,7 +175,7 @@
     </div>
 </div>
 
-<!-- Message cachÃ© pour copie -->
+<!-- Message caché pour copie -->
 <textarea id="message" style="position: absolute; left: -9999px;">{{ $sms->message ?? '' }}</textarea>
 @endsection
 
@@ -189,7 +189,7 @@ function copyMessage() {
     // Feedback visuel
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-check me-2"></i>CopiÃ©!';
+    btn.innerHTML = '<i class="fas fa-check me-2"></i>Copié!';
     btn.classList.remove('btn-outline-warning');
     btn.classList.add('btn-success');
     

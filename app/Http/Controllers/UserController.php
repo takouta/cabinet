@@ -25,6 +25,9 @@ class UserController extends Controller
             $query->where('actif', $request->statut === 'actif');
         }
 
+        // Sécurité : l'admin ne voit que les rôles subordonnés
+        $query->whereNotIn('role', ['admin_cabinet', 'super_admin']);
+
         // Recherche
         if ($request->filled('search')) {
             $search = $request->search;
@@ -58,8 +61,8 @@ class UserController extends Controller
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
-            'role' => 'required|in:admin_cabinet,medecin,secretaire,patient,fournisseur',
-            'telephone' => 'nullable|string|max:20',
+            'role' => 'required|in:medecin,secretaire,patient,fournisseur',
+            'telephone' => 'nullable|regex:/^[0-9]+$/|max:20',
         ]);
 
         $user = User::create([
@@ -72,7 +75,7 @@ class UserController extends Controller
             'actif' => true,
         ]);
 
-        return redirect()->route('users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'Utilisateur créé avec succès');
     }
 
@@ -105,13 +108,13 @@ class UserController extends Controller
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'role' => 'required|in:admin_cabinet,medecin,secretaire,patient,fournisseur',
-            'telephone' => 'nullable|string|max:20',
+            'role' => 'required|in:medecin,secretaire,patient,fournisseur',
+            'telephone' => 'nullable|regex:/^[0-9]+$/|max:20',
         ]);
 
         $user->update($request->only(['nom', 'prenom', 'email', 'telephone', 'role']));
 
-        return redirect()->route('users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'Utilisateur mis à jour avec succès');
     }
 
@@ -128,7 +131,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'Utilisateur supprimé avec succès');
     }
 
@@ -138,6 +141,15 @@ class UserController extends Controller
     public function toggleStatus($id)
     {
         $user = User::findOrFail($id);
+
+        // Sécurité : l'admin ne peut pas désactiver un autre admin ou super_admin
+        if (in_array($user->role, ['admin_cabinet', 'super_admin'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Action non autorisée sur ce type de compte.'
+            ], 403);
+        }
+
         $user->actif = !$user->actif;
         $user->save();
 

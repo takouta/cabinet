@@ -28,8 +28,8 @@
                     <tr>
                         <th>Nom</th>
                         <th>Email</th>
-                        <th>TÃ©lÃ©phone</th>
-                        <th>SpÃ©cialitÃ©</th>
+                        <th>Téléphone</th>
+                        <th>Spécialité</th>
                         <th>Produits</th>
                         <th>Actions</th>
                     </tr>
@@ -58,7 +58,7 @@
                             <form action="{{ route('fournisseurs.destroy', $fournisseur) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('ÃŠtes-vous sÃ»r?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr?')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -66,7 +66,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center">Aucun fournisseur trouvÃ©</td>
+                        <td colspan="6" class="text-center">Aucun fournisseur trouvé</td>
                     </tr>
                     @endforelse
                 </tbody>

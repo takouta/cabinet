@@ -7,7 +7,7 @@ use App\Models\Sms;
 use App\Modules\Patient\Models\Patient;
 use App\Modules\Fournisseur\Models\Fournisseur;
 
-class SmsController extends Controller  // Ã¢â€ Â ChangÃƒÂ© de "SmsController" ÃƒÂ  "SmsController"
+class SmsController extends Controller  // ââ€ Â ChangÃƒÂ© de "SmsController" ÃƒÂ  "SmsController"
 {
     public function index()
     {

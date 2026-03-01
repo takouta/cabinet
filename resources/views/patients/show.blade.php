@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'DÃ©tails du Patient')
+@section('title', 'Détails du Patient')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="fas fa-user-injured me-2"></i>DÃ©tails du Patient</h1>
+    <h1><i class="fas fa-user-injured me-2"></i>Détails du Patient</h1>
     <div>
         <a href="{{ route('patients.edit', $patient->id) }}" class="btn btn-warning">
             <i class="fas fa-edit me-2"></i>Modifier
         </a>
-        <a href="{{ route('patients.index') }}" class="btn btn-secondary">
+        <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i>Retour
         </a>
     </div>
@@ -28,7 +28,7 @@
                         <td>{{ $patient->nom }}</td>
                     </tr>
                     <tr>
-                        <th>PrÃ©nom:</th>
+                        <th>Prénom:</th>
                         <td>{{ $patient->prenom }}</td>
                     </tr>
                     <tr>
@@ -36,7 +36,7 @@
                         <td>{{ $patient->email }}</td>
                     </tr>
                     <tr>
-                        <th>TÃ©lÃ©phone:</th>
+                        <th>Téléphone:</th>
                         <td>{{ $patient->telephone }}</td>
                     </tr>
                     <tr>
@@ -52,4 +52,4 @@
                         <td>{{ $patient->adresse }}</td>
                     </tr>
                     <tr>
-                        <th>AntÃ©cÃ©d
+                        <th>Antécéd

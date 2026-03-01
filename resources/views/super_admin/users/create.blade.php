@@ -58,7 +58,7 @@
 
         <div class="flex justify-end gap-3">
             <a href="{{ route('super_admin.users.index') }}" class="px-4 py-2 border rounded-lg">Annuler</a>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">Creer</button>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Creer</button>
         </div>
     </form>
 </div>

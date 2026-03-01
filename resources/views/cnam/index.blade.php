@@ -1,79 +1,86 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
+
+@section('title', 'CNAM (BS)')
 
 @section('content')
-<div class="container py-4">
-    <div class="row align-items-center mb-4">
-        <div class="col">
-            <h1 class="h3 font-weight-bold text-primary mb-0">Bordereaux de Soins (BS CNAM)</h1>
-            <p class="text-muted">Gestion des transmissions et remboursements CNAM</p>
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">Bordereaux de Soins</h1>
+            <p class="text-sm text-gray-500">Gestion des transmissions et remboursements CNAM.</p>
         </div>
-        <div class="col-auto">
-            <a href="{{ route('cnam.create') }}" class="btn btn-primary shadow-sm rounded-pill px-4">
-                <i class="fas fa-plus mr-2"></i> Nouveau Bordereau
+        @php
+            $currentPrefix = str_contains(request()->route()->getName(), 'admin') ? 'admin.' : (str_contains(request()->route()->getName(), 'medecin') ? 'medecin.' : '');
+        @endphp
+        <div class="flex gap-3">
+            <a href="{{ route($currentPrefix . 'cnam.soins.create') }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition-colors">
+                <i class="fas fa-file-medical mr-2"></i>Saisir nouveau BS
+            </a>
+            <a href="{{ route($currentPrefix . 'cnam.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Générer Bordereau
             </a>
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
-            <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="bg-light">
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-bold border-b">
                     <tr>
-                        <th class="px-4 border-0">Numéro BS</th>
-                        <th class="border-0">Date</th>
-                        <th class="border-0">Montant Total</th>
-                        <th class="border-0">Statut</th>
-                        <th class="border-0 text-right px-4">Actions</th>
+                        <th class="px-6 py-4">Numéro BS</th>
+                        <th class="px-6 py-4">Date</th>
+                        <th class="px-6 py-4">Montant Total</th>
+                        <th class="px-6 py-4">Statut</th>
+                        <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100">
                     @forelse($bordereaux as $bordereau)
-                    <tr>
-                        <td class="px-4 font-weight-bold">{{ $bordereau->numero_bs }}</td>
-                        <td>{{ $bordereau->date_bordereau }}</td>
-                        <td><span class="badge badge-info px-3 py-2" style="font-size: 0.9rem;">{{ number_format($bordereau->montant_total, 3, ',', ' ') }} DT</span></td>
-                        <td>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 font-semibold text-gray-900">{{ $bordereau->numero_bs }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ \Carbon\Carbon::parse($bordereau->date_bordereau)->format('d/m/Y') }}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                                {{ number_format($bordereau->montant_total, 3, ',', ' ') }} DT
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
                             @php
-                                $statusClass = [
-                                    'brouillon' => 'secondary',
-                                    'transmis' => 'warning',
-                                    'valide' => 'success',
-                                    'rejete' => 'danger',
-                                    'paye' => 'success shadow-sm'
-                                ][$bordereau->statut] ?? 'secondary';
+                                $statusStyles = [
+                                    'brouillon' => 'bg-gray-100 text-gray-800',
+                                    'transmis' => 'bg-yellow-100 text-yellow-800',
+                                    'valide' => 'bg-green-100 text-green-800',
+                                    'rejete' => 'bg-red-100 text-red-800',
+                                    'paye' => 'bg-emerald-100 text-emerald-800',
+                                ];
+                                $style = $statusStyles[$bordereau->statut] ?? 'bg-gray-100 text-gray-800';
                             @endphp
-                            <span class="badge badge-{{ $statusClass }} px-3 py-2 text-capitalize">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $style }} capitalize">
                                 {{ $bordereau->statut }}
                             </span>
                         </td>
-                        <td class="text-right px-4">
+                        <td class="px-6 py-4 text-right space-x-3">
                             @if($bordereau->statut === 'brouillon')
-                                <form action="{{ route('cnam.transmettre', $bordereau->id) }}" method="POST" class="d-inline">
+                                <form action="{{ route($currentPrefix . 'cnam.transmettre', $bordereau->id) }}" method="POST" class="inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    <button type="submit" class="text-blue-600 hover:text-blue-800 font-medium text-xs transition-colors" title="Transmettre à la CNAM">
                                         <i class="fas fa-paper-plane mr-1"></i> Transmettre
                                     </button>
                                 </form>
                             @endif
-                            <button class="btn btn-sm btn-link text-muted">
+                            <button class="text-gray-400 hover:text-gray-600 transition-colors">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="py-5 text-center text-muted">
-                            <div class="mb-3"><i class="fas fa-file-invoice fa-3x opacity-25"></i></div>
-                            Aucun bordereau trouvé.
+                        <td colspan="5" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-file-invoice fa-3x text-gray-200 mb-4"></i>
+                                <p class="text-gray-500 font-medium">Aucun bordereau trouvé.</p>
+                                <p class="text-sm text-gray-400 mt-1">Commencez par générer un nouveau bordereau.</p>
+                            </div>
                         </td>
                     </tr>
                     @endforelse
@@ -81,19 +88,10 @@
             </table>
         </div>
         @if($bordereaux->hasPages())
-            <div class="card-footer bg-white border-0 py-3">
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
                 {{ $bordereaux->links() }}
             </div>
         @endif
     </div>
 </div>
-
-<style>
-    .bg-primary-light { background-color: #e7f1ff; }
-    .text-primary { color: #0d6efd !important; }
-    .btn-primary { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); border: none; }
-    .table thead th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; font-weight: 700; }
-    .table td { vertical-align: middle; }
-    .card { border: none; }
-</style>
 @endsection

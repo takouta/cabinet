@@ -6,8 +6,8 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="fas fa-calendar-plus me-2"></i>Nouveau Rendez-vous</h1>
-        <a href="{{ route('rendezvous.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Retour Ã  la liste
+        <a href="{{ route($routePrefix . '.rendezvous.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
         </a>
     </div>
 
@@ -16,7 +16,7 @@
             <h5 class="card-title mb-0"><i class="fas fa-calendar-alt me-2"></i>Planifier un nouveau rendez-vous</h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('rendezvous.store') }}" method="POST">
+            <form action="{{ route($routePrefix . '.rendezvous.store') }}" method="POST">
                 @csrf
                 
                 <div class="row">
@@ -27,7 +27,7 @@
                             </label>
                             <select class="form-select @error('patient_id') is-invalid @enderror" 
                                     id="patient_id" name="patient_id" required>
-                                <option value="">SÃ©lectionner un patient</option>
+                                <option value="">Sélectionner un patient</option>
                                 @foreach($patients as $patient)
                                     <option value="{{ $patient->id }}" {{ old('patient_id') == $patient->id ? 'selected' : '' }}>
                                         {{ $patient->nom }} {{ $patient->prenom }} - {{ $patient->telephone }}
@@ -60,7 +60,7 @@
                     </label>
                     <textarea class="form-control @error('motif') is-invalid @enderror" 
                               id="motif" name="motif" rows="4" 
-                              placeholder="DÃ©crivez le motif de la consultation..." required>{{ old('motif') }}</textarea>
+                              placeholder="Décrivez le motif de la consultation..." required>{{ old('motif') }}</textarea>
                     @error('motif')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -74,11 +74,11 @@
                         <option value="en_attente" {{ old('statut') == 'en_attente' ? 'selected' : '' }}>
                             â³ En attente
                         </option>
-                        <option value="confirmÃ©" {{ old('statut') == 'confirmÃ©' ? 'selected' : '' }}>
-                            âœ… ConfirmÃ©
+                        <option value="confirmé" {{ old('statut') == 'confirmé' ? 'selected' : '' }}>
+                            âœ… Confirmé
                         </option>
-                        <option value="annulÃ©" {{ old('statut') == 'annulÃ©' ? 'selected' : '' }}>
-                            âŒ AnnulÃ©
+                        <option value="annulé" {{ old('statut') == 'annulé' ? 'selected' : '' }}>
+                            âŒ Annulé
                         </option>
                     </select>
                     @error('statut')
@@ -88,9 +88,9 @@
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-calendar-check me-2"></i>CrÃ©er le rendez-vous
+                        <i class="fas fa-calendar-check me-2"></i>Créer le rendez-vous
                     </button>
-                    <a href="{{ route('rendezvous.index') }}" class="btn btn-outline-secondary btn-lg">
+                    <a href="{{ route($routePrefix . '.rendezvous.index') }}" class="btn btn-outline-secondary btn-lg">
                         <i class="fas fa-times me-2"></i>Annuler
                     </a>
                 </div>
@@ -107,10 +107,10 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
-                        <li><i class="fas fa-check text-success me-2"></i>SÃ©lectionnez le patient concernÃ©</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Sélectionnez le patient concerné</li>
                         <li><i class="fas fa-check text-success me-2"></i>Choisissez une date et heure disponibles</li>
-                        <li><i class="fas fa-check text-success me-2"></i>DÃ©crivez clairement le motif</li>
-                        <li><i class="fas fa-check text-success me-2"></i>DÃ©finissez le statut appropriÃ©</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Décrivez clairement le motif</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Définissez le statut approprié</li>
                     </ul>
                 </div>
             </div>
@@ -123,9 +123,9 @@
                 <div class="card-body">
                     <p class="mb-2"><strong>Statuts :</strong></p>
                     <ul class="list-unstyled">
-                        <li><span class="badge bg-warning me-2">â³</span>En attente : Ã€ confirmer</li>
-                        <li><span class="badge bg-success me-2">âœ…</span>ConfirmÃ© : Rendez-vous validÃ©</li>
-                        <li><span class="badge bg-danger me-2">âŒ</span>AnnulÃ© : Rendez-vous annulÃ©</li>
+                        <li><span class="badge bg-warning me-2">â³</span>En attente : À confirmer</li>
+                        <li><span class="badge bg-success me-2">âœ…</span>Confirmé : Rendez-vous validé</li>
+                        <li><span class="badge bg-danger me-2">âŒ</span>Annulé : Rendez-vous annulé</li>
                     </ul>
                 </div>
             </div>
@@ -177,7 +177,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Mettre la date et heure actuelles par dÃ©faut
+    // Mettre la date et heure actuelles par défaut
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dateTimeInput.value = defaultDateTime;
     }
 
-    // Validation en temps rÃ©el
+    // Validation en temps réel
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {

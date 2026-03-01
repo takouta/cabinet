@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="telephone" class="form-label">TÃ©lÃ©phone *</label>
+                        <label for="telephone" class="form-label">Téléphone *</label>
                         <input type="text" class="form-control @error('telephone') is-invalid @enderror" 
                                id="telephone" name="telephone" value="{{ old('telephone') }}" required>
                         @error('telephone')
@@ -47,15 +47,15 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="specialite" class="form-label">SpÃ©cialitÃ© *</label>
+                        <label for="specialite" class="form-label">Spécialité *</label>
                         <select class="form-control @error('specialite') is-invalid @enderror" 
                                 id="specialite" name="specialite" required>
-                            <option value="">SÃ©lectionnez une spÃ©cialitÃ©</option>
-                            <option value="MÃ©dicaments" {{ old('specialite') == 'MÃ©dicaments' ? 'selected' : '' }}>MÃ©dicaments</option>
+                            <option value="">Sélectionnez une spécialité</option>
+                            <option value="Médicaments" {{ old('specialite') == 'Médicaments' ? 'selected' : '' }}>Médicaments</option>
                             <option value="Consommables" {{ old('specialite') == 'Consommables' ? 'selected' : '' }}>Consommables</option>
-                            <option value="Ã‰quipements" {{ old('specialite') == 'Ã‰quipements' ? 'selected' : '' }}>Ã‰quipements</option>
+                            <option value="Équipements" {{ old('specialite') == 'Équipements' ? 'selected' : '' }}>Équipements</option>
                             <option value="Protection" {{ old('specialite') == 'Protection' ? 'selected' : '' }}>Protection</option>
-                            <option value="MatÃ©riaux" {{ old('specialite') == 'MatÃ©riaux' ? 'selected' : '' }}>MatÃ©riaux</option>
+                            <option value="Matériaux" {{ old('specialite') == 'Matériaux' ? 'selected' : '' }}>Matériaux</option>
                             <option value="Instruments" {{ old('specialite') == 'Instruments' ? 'selected' : '' }}>Instruments</option>
                         </select>
                         @error('specialite')
@@ -66,7 +66,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="adresse" class="form-label">Adresse complÃ¨te *</label>
+                <label for="adresse" class="form-label">Adresse complète *</label>
                 <textarea class="form-control @error('adresse') is-invalid @enderror" 
                           id="adresse" name="adresse" rows="3" required>{{ old('adresse') }}</textarea>
                 @error('adresse')
@@ -76,10 +76,10 @@
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('fournisseurs.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Retour Ã  la liste
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>CrÃ©er le Fournisseur
+                    <i class="fas fa-save me-2"></i>Créer le Fournisseur
                 </button>
             </div>
         </form>
