@@ -260,8 +260,8 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h1 class="card-title">ðŸ“¦ Gestion du Stock</h1>
-                <a href="{{ route('stock.create') }}" class="btn-primary">+ Ajouter du matériel</a>
+                <h1 class="card-title">Gestion du Stock</h1>
+                <a href="{{ route('stock.create') }}" class="btn-primary">Ajouter du matériel</a>
             </div>
 
             <!-- Messages de succès -->
@@ -313,28 +313,25 @@
                                 <td>{{ $stock->fournisseur->nom ?? 'N/A' }}</td>
                                 <td>
                                     @if($stock->prix_unitaire)
-                                        {{ number_format($stock->prix_unitaire, 2) }} €
+                                        {{ number_format($stock->prix_unitaire, 2) }} DT
                                     @else
                                         N/A
                                     @endif
                                 </td>
                                 <td>
                                     <div class="actions">
-                                        <a href="{{ route('stock.edit', $stock->id) }}" class="btn-sm btn-edit">âœï¸</a>
-                                        <form action="{{ route('stock.destroy', $stock->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-sm btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce matériel?')">ðŸ—‘ï¸</button>
-                                        </form>
+                                        <a href="{{ route('stock.edit', $stock->id) }}" class="btn-sm btn-edit" style="text-decoration:none;">Modifier</a>
                                     </div>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div style="margin-top: 1rem;">
+                    {{ $stocks->links() }}
+                </div>
             @else
                 <div class="empty-state">
-                    <div>ðŸ“¦</div>
                     <h3>Aucun matériel en stock</h3>
                     <p>Commencez par ajouter votre premier matériel</p>
                     <a href="{{ route('stock.create') }}" class="btn-primary" style="margin-top: 1rem;">Ajouter du matériel</a>

@@ -90,7 +90,7 @@ class RegisterController extends Controller
         ];
 
         if (Schema::hasColumn('users', 'actif')) {
-            $payload['actif'] = true;
+            $payload['actif'] = false; // Désactivé par défaut pour les patients
         }
 
         $user = User::create($payload);
@@ -99,6 +99,7 @@ class RegisterController extends Controller
             [$prenom, $nom] = $this->splitName($validated['name']);
 
             Patient::create([
+                'user_id' => $user->id, // Lien crucial manquant
                 'email' => $validated['email'],
                 'nom' => $nom ?: $validated['name'],
                 'prenom' => $prenom,
@@ -110,11 +111,10 @@ class RegisterController extends Controller
             ]);
         }
 
-        auth()->login($user);
-        $request->session()->regenerate();
+        // Suppression de la connexion automatique
+        // auth()->login($user);
+        // $request->session()->regenerate();
 
-        // Si la base ne supporte pas encore "patient", le fallback "assistant"
-        // est redirige vers le dashboard patient.
         return redirect()->route('login')->with('success', 'Compte patient créé. Veuillez attendre l\'activation par l\'administrateur.');
     }
 

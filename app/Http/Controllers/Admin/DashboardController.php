@@ -10,18 +10,20 @@ use App\Modules\RendezVous\Models\RendezVous;
 use App\Modules\Stock\Models\StockMatierePremiere;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Statistiques
-        $stats = [
-            'patients_total' => Patient::count(),
-            'rendez_vous_aujourdhui' => RendezVous::whereDate('date_heure', today())->count(),
-            'produits_alerte' => $this->getProduitsAlerte(),
-            'bs_en_attente' => $this->getBsEnAttenteCount(),
-        ];
+        $stats = Cache::remember('admin_dashboard_stats', 120, function () {
+            return [
+                'patients_total' => Patient::count(),
+                'rendez_vous_aujourdhui' => RendezVous::whereDate('date_heure', today())->count(),
+                'produits_alerte' => $this->getProduitsAlerte(),
+                'bs_en_attente' => $this->getBsEnAttenteCount(),
+            ];
+        });
 
         // Rendez-vous du jour avec relations
         $rendez_vous_aujourdhui = RendezVous::with(['patient', 'dentiste'])
@@ -33,7 +35,9 @@ class DashboardController extends Controller
         $produits_alerte = $this->getProduitsAlerteDetails();
 
         // Données pour les graphiques
-        $rdv_semaine = $this->getRdvSemaine();
+        $rdv_semaine = Cache::remember('admin_dashboard_rdv_semaine', 120, function () {
+            return $this->getRdvSemaine();
+        });
         $top_dentistes = $this->getTopDentistes();
 
         return view('admin.dashboard', compact(
@@ -62,12 +66,20 @@ class DashboardController extends Controller
 
     private function getRdvSemaine()
     {
-        // Logique pour les rendez-vous de la semaine
+        $start = now()->startOfWeek();
+        $end = (clone $start)->addDays(5)->endOfDay();
+
+        $countsByDay = RendezVous::selectRaw('DATE(date_heure) as day, COUNT(*) as total')
+            ->whereBetween('date_heure', [$start, $end])
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
         $rdvParJour = [];
         for ($i = 0; $i < 6; $i++) {
-            $date = now()->startOfWeek()->addDays($i);
-            $rdvParJour[] = RendezVous::whereDate('date_heure', $date)->count();
+            $day = (clone $start)->addDays($i)->toDateString();
+            $rdvParJour[] = (int) ($countsByDay[$day] ?? 0);
         }
+
         return $rdvParJour;
     }
 

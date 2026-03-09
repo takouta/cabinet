@@ -19,11 +19,11 @@ class DashboardController extends Controller
             'rendezVousAujourdhui' => RendezVous::whereDate('date_heure', today())->count(),
             'alertesStock' => StockMatierePremiere::whereColumn('quantite', '<=', 'seuil_alerte')->count(),
             'totalFournisseurs' => Fournisseur::count(),
-            'rdvEnAttente' => RendezVous::where('statut', 'confirmÃƒÂ©')->count(),
+            'rdvEnAttente' => RendezVous::where('statut', 'confirmé')->count(),
             'patientsNouveauxMois' => Patient::whereMonth('created_at', now()->month)->count(),
         ];
 
-        // DonnÃƒÂ©es supplÃƒÂ©mentaires pour les vues dÃƒÂ©taillÃƒÂ©es
+        // Données supplémentaires pour les vues détaillées
         $rdvAujourdhuiList = RendezVous::with('patient')
             ->whereDate('date_heure', today())
             ->orderBy('date_heure')
@@ -35,7 +35,7 @@ class DashboardController extends Controller
 
         $fournisseurs = Fournisseur::whereIn('id', [1, 2])->get();
 
-        // Rendez-vous ÃƒÂ  venir (7 prochains jours)
+        // Rendez-vous à venir (7 prochains jours)
         $rdvProchains = RendezVous::with('patient')
             ->whereDate('date_heure', '>=', today())
             ->whereDate('date_heure', '<=', today()->addDays(7))
@@ -57,7 +57,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * RÃƒÂ©cupÃƒÂ¨re les statistiques mensuelles des patients
+     * Récupère les statistiques mensuelles des patients
      */
     private function getPatientsMensuels()
     {
@@ -73,14 +73,14 @@ class DashboardController extends Controller
     }
 
     /**
-     * API pour les donnÃƒÂ©es du graphique
+     * API pour les données du graphique
      */
     public function getChartData()
     {
         $patients = $this->getPatientsMensuels();
 
-        // ComplÃƒÂ©ter les mois manquants avec 0
-        $moisLabels = ['Jan', 'FÃƒÂ©v', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'AoÃƒÂ»', 'Sep', 'Oct', 'Nov', 'DÃƒÂ©c'];
+        // Compléter les mois manquants avec 0
+        $moisLabels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
         $patientsData = [];
 
         for ($mois = 1; $mois <= 12; $mois++) {

@@ -58,11 +58,24 @@
                 </div>
             </div>
             @if(($stats['bs_en_attente'] ?? 0) > 0)
-                <div class="mt-3">
-                    <button onclick="transmettreBS()" class="text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200">
-                        <i class="fas fa-send mr-1"></i>Transmettre à la CNAM
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <button onclick="transmettreBS()" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200 transition-colors">
+                        <i class="fas fa-paper-plane mr-1"></i>Transmettre
                     </button>
+                    @if(Route::has('admin.cnam.daily-pdf'))
+                    <a href="{{ route('admin.cnam.daily-pdf') }}" target="_blank" class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 transition-colors">
+                        <i class="fas fa-file-pdf mr-1"></i>Bordereau PDF
+                    </a>
+                    @endif
                 </div>
+            @else
+                @if(Route::has('admin.cnam.daily-pdf'))
+                <div class="mt-3">
+                    <a href="{{ route('admin.cnam.daily-pdf') }}" target="_blank" class="text-xs text-gray-500 hover:text-red-600 transition-colors">
+                        <i class="fas fa-file-pdf mr-1"></i>Bordereau PDF du jour
+                    </a>
+                </div>
+                @endif
             @endif
         </div>
     </div>

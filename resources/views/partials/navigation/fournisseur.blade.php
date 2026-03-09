@@ -6,12 +6,10 @@
     </a>
 </li>
 
-@if(Route::has('fournisseurs.index'))
 <li>
-    <a href="{{ route('fournisseurs.index') }}"
-       class="{{ request()->routeIs('fournisseurs.*') ? 'active' : '' }}">
-        <i class="fas fa-boxes"></i>
-        Mes Produits
+    <a href="{{ route('fournisseur.factures.index') }}"
+       class="{{ request()->routeIs('fournisseur.factures.*') ? 'active' : '' }}">
+        <i class="fas fa-file-invoice-dollar"></i>
+        Mes Factures
     </a>
 </li>
-@endif

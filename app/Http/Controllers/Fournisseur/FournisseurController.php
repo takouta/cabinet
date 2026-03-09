@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class FournisseurController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'role:admin_cabinet,super_admin,secretaire,fournisseur']);
+    }
+
     /**
      * Afficher le dashboard fournisseur
      */

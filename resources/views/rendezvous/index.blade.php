@@ -49,6 +49,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-3">
+                {{ $rendezvous->links() }}
+            </div>
         @else
             <div class="alert alert-info">
                 Aucun rendez-vous trouvé.

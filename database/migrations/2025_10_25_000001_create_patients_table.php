@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('adresse');
             $table->text('antecedents_medicaux')->nullable();
             $table->timestamps();
+            $table->index('created_at');
         });
 
     }

@@ -7,6 +7,7 @@ use App\Modules\CNAM\Models\Soin;
 use App\Modules\CNAM\Models\BordereauCnam;
 use App\Modules\CNAM\Services\CnamService;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CnamController extends Controller
 {
@@ -25,6 +26,10 @@ class CnamController extends Controller
 
     public function create()
     {
+        if (!in_array(auth()->user()->role, ['medecin', 'dentiste'])) {
+            return redirect()->route($this->getRoutePrefix() . 'cnam.index')->with('error', 'Seul le médecin peut générer un bordereau.');
+        }
+
         $soinsDisponibles = Soin::where('statut', 'effectue')
             ->with('patient')
             ->get();
@@ -33,6 +38,10 @@ class CnamController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(auth()->user()->role, ['medecin', 'dentiste'])) {
+            return redirect()->route($this->getRoutePrefix() . 'cnam.index')->with('error', 'Seul le médecin peut générer un bordereau.');
+        }
+
         $request->validate([
             'soin_ids' => 'required|array',
             'soin_ids.*' => 'exists:soins,id'
@@ -52,14 +61,57 @@ class CnamController extends Controller
         return back()->with('success', 'Bordereau transmis à la CNAM.');
     }
 
+    public function generatePdf($id)
+    {
+        $bordereau = BordereauCnam::with(['dentiste', 'soins.patient'])->findOrFail($id);
+        
+        $pdf = Pdf::loadView('cnam.pdf', compact('bordereau'));
+        
+        return $pdf->stream('bordereau_cnam_' . $bordereau->numero_bs . '.pdf');
+    }
+
+    public function generateDailyPdf()
+    {
+        $date = today()->toDateString();
+        $query = Soin::with(['patient', 'dentiste'])
+            ->whereDate('date_soin', $date);
+
+        // Si c'est un médecin, il ne voit que ses propres soins
+        if (auth()->user()->role === 'medecin') {
+            $query->where('dentiste_id', auth()->id());
+        }
+
+        $soins = $query->orderBy('created_at')->get();
+
+        if ($soins->isEmpty()) {
+            return back()->with('info', 'Aucun soin enregistré pour aujourd\'hui.');
+        }
+
+        $pdf = Pdf::loadView('cnam.pdf_journalier', [
+            'soins' => $soins,
+            'date' => $date,
+            'user' => auth()->user()
+        ]);
+
+        return $pdf->stream('bordereau_journalier_' . $date . '.pdf');
+    }
+
     public function createSoin()
     {
+        if (!in_array(auth()->user()->role, ['medecin', 'dentiste'])) {
+            return redirect()->route($this->getRoutePrefix() . 'cnam.index')->with('error', 'Seul le médecin peut saisir de nouveaux soins.');
+        }
+
         $patients = \App\Modules\Patient\Models\Patient::orderBy('nom')->get();
         return view('cnam.soins.create', compact('patients'));
     }
 
     public function storeSoin(Request $request)
     {
+        if (!in_array(auth()->user()->role, ['medecin', 'dentiste'])) {
+            return redirect()->route($this->getRoutePrefix() . 'cnam.index')->with('error', 'Seul le médecin peut enregistrer de nouveaux soins.');
+        }
+
         $data = $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'soins' => 'required|array|min:1',
@@ -94,6 +146,7 @@ class CnamController extends Controller
 
     protected function getRoutePrefix()
     {
-        return str_contains(request()->route()->getName(), 'admin') ? 'admin.' : (str_contains(request()->route()->getName(), 'medecin') ? 'medecin.' : '');
+        $routeName = optional(request()->route())->getName() ?? '';
+        return str_contains($routeName, 'admin') ? 'admin.' : (str_contains($routeName, 'medecin') ? 'medecin.' : '');
     }
 }

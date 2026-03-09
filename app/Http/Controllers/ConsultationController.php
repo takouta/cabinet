@@ -11,7 +11,7 @@ class ConsultationController extends Controller
     public function index()
     {
         $consultations = RendezVous::with(['patient', 'dentiste'])
-            ->where('statut', 'confirmÃƒÂ©')
+            ->whereIn('statut', ['confirmé', 'terminé'])
             ->orderBy('date_heure', 'desc')
             ->get();
             
@@ -28,22 +28,21 @@ class ConsultationController extends Controller
     {
         $validated = $request->validate([
             'patient_id' => 'required|exists:patients,id',
-            'date_heure' => 'required|date|after:now',
+            'date_heure' => 'required|date',
             'motif' => 'required|string|max:500',
-            'type_consultation' => 'required|in:premiÃƒÂ¨re_visite,contrÃƒÂ´le,traitement,urgence',
+            'type_consultation' => 'required|in:première_visite,contrôle,traitement,urgence',
             'observations' => 'nullable|string',
             'diagnostic' => 'nullable|string',
             'traitement_effectue' => 'nullable|string'
         ]);
 
-        // Utiliser le modÃƒÂ¨le RendezVous existant
         RendezVous::create(array_merge($validated, [
             'dentiste_id' => auth()->id(),
-            'statut' => 'confirmÃƒÂ©'
+            'statut' => 'confirmé'
         ]));
 
         return redirect()->route('consultations.index')
-                        ->with('success', 'Consultation crÃƒÂ©ÃƒÂ©e avec succÃƒÂ¨s!');
+                        ->with('success', 'Consultation créée avec succès!');
     }
 
     public function show(RendezVous $consultation)
@@ -63,7 +62,7 @@ class ConsultationController extends Controller
             'patient_id' => 'required|exists:patients,id',
             'date_heure' => 'required|date',
             'motif' => 'required|string|max:500',
-            'type_consultation' => 'required|in:premiÃƒÂ¨re_visite,contrÃƒÂ´le,traitement,urgence',
+            'type_consultation' => 'required|in:première_visite,contrôle,traitement,urgence',
             'observations' => 'nullable|string',
             'diagnostic' => 'nullable|string',
             'traitement_effectue' => 'nullable|string'
@@ -72,7 +71,7 @@ class ConsultationController extends Controller
         $consultation->update($validated);
 
         return redirect()->route('consultations.index')
-                        ->with('success', 'Consultation modifiÃƒÂ©e avec succÃƒÂ¨s!');
+                        ->with('success', 'Consultation modifiée avec succès!');
     }
 
     public function destroy(RendezVous $consultation)
@@ -80,7 +79,7 @@ class ConsultationController extends Controller
         $consultation->delete();
 
         return redirect()->route('consultations.index')
-                        ->with('success', 'Consultation supprimÃƒÂ©e avec succÃƒÂ¨s!');
+                        ->with('success', 'Consultation supprimée avec succès!');
     }
 
     public function completerConsultation(RendezVous $consultation)
@@ -99,11 +98,10 @@ class ConsultationController extends Controller
         ]);
 
         $consultation->update(array_merge($validated, [
-            'statut' => 'terminÃƒÂ©'
+            'statut' => 'terminé'
         ]));
 
         return redirect()->route('consultations.index')
-                        ->with('success', 'Consultation complÃƒÂ©tÃƒÂ©e avec succÃƒÂ¨s!');
+                        ->with('success', 'Consultation complétée avec succès!');
     }
 }
-

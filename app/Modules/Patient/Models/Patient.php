@@ -18,7 +18,13 @@ class Patient extends Model
         'date_naissance',
         'adresse',
         'antecedents_medicaux',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(\App\Modules\Auth\Models\User::class);
+    }
 
     public function rendezvous()
     {

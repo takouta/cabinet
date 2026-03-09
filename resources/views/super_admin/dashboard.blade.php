@@ -1,259 +1,231 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Dashboard Super Admin')
+@section('page-title', 'Tableau de Bord Super Admin')
+@section('page-subtitle', 'Vue globale de la plateforme')
 
 @section('content')
-<div class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Total Utilisateurs</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ $totalUsers }}</p>
-                    <p class="text-xs text-green-600 mt-2">
-                        <i class="fas fa-arrow-up mr-1"></i>{{ $newUsersThisMonth }} ce mois
-                    </p>
-                </div>
-                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-users text-2xl text-blue-600"></i>
-                </div>
-            </div>
-            <div class="mt-4 flex justify-between text-sm">
-                <span class="text-green-600"><i class="fas fa-circle mr-1 text-xs"></i>{{ $activeUsers }} actifs</span>
-                <span class="text-red-600"><i class="fas fa-circle mr-1 text-xs"></i>{{ $inactiveUsers }} inactifs</span>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Total Patients</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ $totalPatients }}</p>
-                    <p class="text-xs text-green-600 mt-2">
-                        <i class="fas fa-user-plus mr-1"></i>{{ $newPatients }} nouveaux
-                    </p>
-                </div>
-                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user-injured text-2xl text-green-600"></i>
-                </div>
+{{-- ===== STATS ===== --}}
+<div class="sa-grid-4">
+    {{-- Utilisateurs --}}
+    <div class="sa-stat-card">
+        <div class="sa-stat-header">
+            <div>
+                <div class="sa-stat-lbl">Total Utilisateurs</div>
+                <div class="sa-stat-val">{{ $totalUsers }}</div>
+                <div class="sa-stat-meta"><i class="fas fa-arrow-up"></i> {{ $newUsersThisMonth }} ce mois</div>
             </div>
+            <div class="sa-stat-icon"><i class="fas fa-users"></i></div>
         </div>
-
-        <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Medecins</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ $totalMedecins }}</p>
-                    <p class="text-xs text-gray-500 mt-2">{{ $medecinsActifs }} actifs</p>
-                </div>
-                <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user-md text-2xl text-purple-600"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 hover:shadow-xl transition">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Cabinets</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ $totalCabinets }}</p>
-                    <p class="text-xs text-gray-500 mt-2">Tous les cabinets</p>
-                </div>
-                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-content-center">
-                    <i class="fas fa-clinic-medical text-2xl text-yellow-600"></i>
-                </div>
-            </div>
+        <div class="sa-stat-footer">
+            <span style="color:#43a047"><i class="fas fa-circle" style="font-size:0.55rem"></i> {{ $activeUsers }} actifs</span>
+            <span style="color:#e53935"><i class="fas fa-circle" style="font-size:0.55rem"></i> {{ $inactiveUsers }} inactifs</span>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">
-                    <i class="fas fa-chart-line text-blue-600 mr-2"></i>Evolution des inscriptions
-                </h3>
+    {{-- Patients --}}
+    <div class="sa-stat-card green">
+        <div class="sa-stat-header">
+            <div>
+                <div class="sa-stat-lbl">Total Patients</div>
+                <div class="sa-stat-val">{{ $totalPatients }}</div>
+                <div class="sa-stat-meta" style="color:#43a047"><i class="fas fa-user-plus"></i> {{ $newPatients }} nouveaux</div>
             </div>
-            <div class="h-64">
-                <canvas id="evolutionChart" class="w-full h-64"></canvas>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                <i class="fas fa-pie-chart text-purple-600 mr-2"></i>Repartition des utilisateurs
-            </h3>
-            <div class="flex items-center justify-center">
-                <canvas id="repartitionChart" class="w-64 h-64"></canvas>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-4">
-                <div class="text-center">
-                    <span class="text-sm text-gray-500">Patients</span>
-                    <p class="text-xl font-bold text-blue-600">{{ $totalPatients }}</p>
-                </div>
-                <div class="text-center">
-                    <span class="text-sm text-gray-500">Medecins</span>
-                    <p class="text-xl font-bold text-green-600">{{ $totalMedecins }}</p>
-                </div>
-                <div class="text-center">
-                    <span class="text-sm text-gray-500">Secretaires</span>
-                    <p class="text-xl font-bold text-purple-600">{{ $totalSecretaires }}</p>
-                </div>
-                <div class="text-center">
-                    <span class="text-sm text-gray-500">Fournisseurs</span>
-                    <p class="text-xl font-bold text-yellow-600">{{ $totalFournisseurs }}</p>
-                </div>
-            </div>
+            <div class="sa-stat-icon"><i class="fas fa-user-injured"></i></div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl shadow-lg p-6 text-white">
-            <i class="fas fa-plus-circle text-3xl mb-3"></i>
-            <h4 class="text-lg font-semibold mb-2">Nouveau Cabinet</h4>
-            <p class="text-sm text-blue-100 mb-4">Ajouter un nouveau cabinet dentaire</p>
-            <a href="{{ route('super_admin.cabinets.create') }}" class="inline-block bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                <i class="fas fa-plus mr-2"></i>Creer
-            </a>
-        </div>
-
-        <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl shadow-lg p-6 text-white">
-            <i class="fas fa-user-plus text-3xl mb-3"></i>
-            <h4 class="text-lg font-semibold mb-2">Nouvel Utilisateur</h4>
-            <p class="text-sm text-green-100 mb-4">Creer un compte pour un medecin, secretaire...</p>
-            <a href="{{ route('super_admin.users.create') }}" class="inline-block bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition">
-                <i class="fas fa-plus mr-2"></i>Creer
-            </a>
-        </div>
-
-        <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl shadow-lg p-6 text-white">
-            <i class="fas fa-file-alt text-3xl mb-3"></i>
-            <h4 class="text-lg font-semibold mb-2">Rapport Mensuel</h4>
-            <p class="text-sm text-purple-100 mb-4">Consulter les rapports d'activite</p>
-            <a href="{{ route('super_admin.statistiques.rapports') }}" class="inline-block bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-50 transition">
-                <i class="fas fa-download mr-2"></i>Voir
-            </a>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-800">
-                <i class="fas fa-users text-blue-600 mr-2"></i>Derniers utilisateurs inscrits
-            </h3>
-            <a href="{{ route('super_admin.users.index') }}" class="text-sm text-blue-600 hover:text-blue-800">
-                Voir tous <i class="fas fa-arrow-right ml-1"></i>
-            </a>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inscription</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @forelse($recentUsers as $user)
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                                    {{ strtoupper(substr($user->prenom ?? 'U', 0, 1) . substr($user->nom ?? 'U', 0, 1)) }}
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ trim(($user->prenom ?? '') . ' ' . ($user->nom ?? '')) ?: ($user->name ?? 'Utilisateur') }}
-                                    </div>
-                                    <div class="text-sm text-gray-500">{{ $user->telephone ?? 'Non renseigne' }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            {{ $user->email }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full
-                                @if($user->role == 'super_admin') bg-red-100 text-red-800
-                                @elseif($user->role == 'admin_cabinet' || $user->role == 'admin') bg-purple-100 text-purple-800
-                                @elseif($user->role == 'medecin' || $user->role == 'dentiste') bg-green-100 text-green-800
-                                @elseif($user->role == 'secretaire' || $user->role == 'assistant') bg-yellow-100 text-yellow-800
-                                @elseif($user->role == 'patient') bg-blue-100 text-blue-800
-                                @else bg-gray-100 text-gray-800 @endif">
-                                {{ ucfirst(str_replace('_', ' ', $user->role)) }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full {{ $user->actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                {{ $user->actif ? 'Actif' : 'Inactif' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ optional($user->created_at)->diffForHumans() }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <div class="flex space-x-3">
-                                <a href="{{ route('super_admin.users.show', $user->id) }}" class="text-blue-600 hover:text-blue-800" title="Voir">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('super_admin.users.edit', $user->id) }}" class="text-green-600 hover:text-green-800" title="Modifier">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button onclick="toggleUserStatus({{ $user->id }})" class="text-{{ $user->actif ? 'orange' : 'green' }}-600 hover:text-{{ $user->actif ? 'orange' : 'green' }}-800" title="{{ $user->actif ? 'Desactiver' : 'Activer' }}">
-                                    <i class="fas fa-{{ $user->actif ? 'user-slash' : 'user-check' }}"></i>
-                                </button>
-                                <form id="delete-user-{{ $user->id }}" action="{{ route('super_admin.users.destroy', $user->id) }}" method="POST" class="hidden">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                <button onclick="deleteUser({{ $user->id }})" class="text-red-600 hover:text-red-800" title="Supprimer">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td class="px-6 py-4 text-sm text-gray-500" colspan="6">Aucun utilisateur.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">
-                <i class="fas fa-history text-gray-600 mr-2"></i>Dernieres activites
-            </h3>
-            <a href="{{ route('super_admin.audits.index') }}" class="text-sm text-blue-600 hover:text-blue-800">
-                Voir tout l'audit
-            </a>
-        </div>
-
-        <div class="space-y-3">
-            @forelse($recentActivities as $activity)
-            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                    <i class="fas fa-{{ $activity->icon ?? 'circle' }} text-blue-600 text-sm"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm text-gray-800">{{ $activity->description }}</p>
-                    <p class="text-xs text-gray-500">{{ optional($activity->created_at)->diffForHumans() }}</p>
-                </div>
-                <span class="text-xs text-gray-500">{{ $activity->user->prenom ?? 'Systeme' }}</span>
+    {{-- Médecins --}}
+    <div class="sa-stat-card purple">
+        <div class="sa-stat-header">
+            <div>
+                <div class="sa-stat-lbl">Médecins</div>
+                <div class="sa-stat-val">{{ $totalMedecins }}</div>
+                <div class="sa-stat-meta" style="color:#78909c">{{ $medecinsActifs }} actifs</div>
             </div>
-            @empty
-            <p class="text-sm text-gray-500">Aucune activite recente.</p>
-            @endforelse
+            <div class="sa-stat-icon"><i class="fas fa-user-md"></i></div>
+        </div>
+    </div>
+
+    {{-- Cabinets --}}
+    <div class="sa-stat-card orange">
+        <div class="sa-stat-header">
+            <div>
+                <div class="sa-stat-lbl">Cabinets</div>
+                <div class="sa-stat-val">{{ $totalCabinets }}</div>
+                <div class="sa-stat-meta" style="color:#78909c">Tous les cabinets</div>
+            </div>
+            <div class="sa-stat-icon"><i class="fas fa-clinic-medical"></i></div>
         </div>
     </div>
 </div>
+
+{{-- ===== CHARTS ===== --}}
+<div class="sa-grid-2">
+    <div class="sa-card">
+        <div class="sa-card-header">
+            <h3><i class="fas fa-chart-line" style="color:#0288d1"></i> Évolution des inscriptions</h3>
+        </div>
+        <div class="sa-card-body">
+            <div class="sa-chart-wrap">
+                <canvas id="evolutionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="sa-card">
+        <div class="sa-card-header">
+            <h3><i class="fas fa-chart-pie" style="color:#8e24aa"></i> Répartition des utilisateurs</h3>
+        </div>
+        <div class="sa-card-body">
+            <div class="sa-chart-wrap" style="height:200px">
+                <canvas id="repartitionChart"></canvas>
+            </div>
+            <div class="sa-rep-grid" style="margin-top:1rem">
+                <div class="sa-rep-item"><div class="rep-lbl">Patients</div><div class="rep-val" style="color:#0288d1">{{ $totalPatients }}</div></div>
+                <div class="sa-rep-item"><div class="rep-lbl">Médecins</div><div class="rep-val" style="color:#43a047">{{ $totalMedecins }}</div></div>
+                <div class="sa-rep-item"><div class="rep-lbl">Secrétaires</div><div class="rep-val" style="color:#8e24aa">{{ $totalSecretaires }}</div></div>
+                <div class="sa-rep-item"><div class="rep-lbl">Fournisseurs</div><div class="rep-val" style="color:#fb8c00">{{ $totalFournisseurs }}</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ===== ACTIONS RAPIDES ===== --}}
+<div class="sa-grid-3">
+    <div class="sa-action-card blue">
+        <i class="fas fa-plus-circle big"></i>
+        <h4>Nouveau Cabinet</h4>
+        <p>Ajouter un nouveau cabinet dentaire</p>
+        <a href="{{ route('super_admin.cabinets.create') }}" class="sa-action-btn">
+            <i class="fas fa-plus"></i> Créer
+        </a>
+    </div>
+    <div class="sa-action-card green">
+        <i class="fas fa-user-plus big"></i>
+        <h4>Nouvel Utilisateur</h4>
+        <p>Créer un compte pour un médecin, secrétaire...</p>
+        <a href="{{ route('super_admin.users.create') }}" class="sa-action-btn">
+            <i class="fas fa-plus"></i> Créer
+        </a>
+    </div>
+    <div class="sa-action-card purple">
+        <i class="fas fa-file-alt big"></i>
+        <h4>Rapport Mensuel</h4>
+        <p>Consulter les rapports d'activité</p>
+        <a href="{{ route('super_admin.statistiques.rapports') }}" class="sa-action-btn">
+            <i class="fas fa-download"></i> Voir
+        </a>
+    </div>
+</div>
+
+{{-- ===== DERNIERS UTILISATEURS ===== --}}
+<div class="sa-card">
+    <div class="sa-card-header">
+        <h3><i class="fas fa-users" style="color:#0288d1"></i> Derniers utilisateurs inscrits</h3>
+        <a href="{{ route('super_admin.users.index') }}" class="sa-link">Voir tous <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="sa-table">
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Statut</th>
+                    <th>Inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($recentUsers as $user)
+                <tr>
+                    <td>
+                        <div class="sa-user-cell">
+                            <div class="sa-avatar">{{ strtoupper(substr($user->prenom ?? 'U', 0, 1) . substr($user->nom ?? 'U', 0, 1)) }}</div>
+                            <div>
+                                <div class="sa-user-name">{{ trim(($user->prenom ?? '') . ' ' . ($user->nom ?? '')) ?: ($user->name ?? 'Utilisateur') }}</div>
+                                <div class="sa-user-phone">{{ $user->telephone ?? 'Non renseigné' }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="color:#546e7a; font-size:0.85rem">{{ $user->email }}</td>
+                    <td>
+                        @php
+                            $roleClass = match($user->role) {
+                                'super_admin'            => 'sa-badge-red',
+                                'admin_cabinet', 'admin' => 'sa-badge-purple',
+                                'medecin', 'dentiste'    => 'sa-badge-green',
+                                'secretaire','assistant' => 'sa-badge-yellow',
+                                'patient'                => 'sa-badge-blue',
+                                default                  => 'sa-badge-gray',
+                            };
+                            $roleLabel = match($user->role) {
+                                'super_admin'   => 'Super Admin',
+                                'admin_cabinet' => 'Admin cabinet',
+                                'medecin'       => 'Médecin',
+                                'dentiste'      => 'Dentiste',
+                                'secretaire'    => 'Secrétaire',
+                                'patient'       => 'Patient',
+                                'fournisseur'   => 'Fournisseur',
+                                default         => ucfirst(str_replace('_', ' ', $user->role)),
+                            };
+                        @endphp
+                        <span class="sa-badge {{ $roleClass }}">{{ $roleLabel }}</span>
+                    </td>
+                    <td>
+                        <span class="sa-badge {{ $user->actif ? 'sa-badge-ok' : 'sa-badge-off' }}">
+                            {{ $user->actif ? 'Actif' : 'Inactif' }}
+                        </span>
+                    </td>
+                    <td style="color:#78909c; font-size:0.82rem">{{ optional($user->created_at)->diffForHumans() }}</td>
+                    <td>
+                        <div class="sa-actions">
+                            <a href="{{ route('super_admin.users.show', $user->id) }}" class="sa-link-blue" title="Voir"><i class="fas fa-eye"></i></a>
+                            <a href="{{ route('super_admin.users.edit', $user->id) }}" class="sa-link-green" title="Modifier"><i class="fas fa-edit"></i></a>
+                            <button onclick="toggleUserStatus({{ $user->id }})" class="{{ $user->actif ? 'sa-link-orange' : 'sa-link-green' }}" title="{{ $user->actif ? 'Désactiver' : 'Activer' }}">
+                                <i class="fas fa-{{ $user->actif ? 'user-slash' : 'user-check' }}"></i>
+                            </button>
+                            <form id="delete-user-{{ $user->id }}" action="{{ route('super_admin.users.destroy', $user->id) }}" method="POST" class="hidden" style="display:none">
+                                @csrf @method('DELETE')
+                            </form>
+                            <button onclick="deleteUser({{ $user->id }})" class="sa-link-red" title="Supprimer"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="6" class="empty-text">Aucun utilisateur.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{-- ===== DERNIÈRES ACTIVITÉS ===== --}}
+<div class="sa-card">
+    <div class="sa-card-header">
+        <h3><i class="fas fa-history" style="color:#546e7a"></i> Dernières activités</h3>
+        <a href="{{ route('super_admin.audits.index') }}" class="sa-link">Voir tout l'audit <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="sa-card-body">
+        @forelse($recentActivities as $activity)
+        <div class="sa-activity-item">
+            <div class="sa-activity-icon">
+                <i class="fas fa-{{ $activity->icon ?? 'circle' }}"></i>
+            </div>
+            <div class="sa-activity-desc">
+                {{ $activity->description }}
+                <div class="sa-activity-time">{{ optional($activity->created_at)->diffForHumans() }}</div>
+            </div>
+            <div class="sa-activity-who">{{ $activity->user->prenom ?? 'Système' }}</div>
+        </div>
+        @empty
+        <p class="empty-text">Aucune activité récente.</p>
+        @endforelse
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -268,17 +240,22 @@
                 datasets: [{
                     label: 'Nouveaux utilisateurs',
                     data: {!! json_encode($evolutionData) !!},
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderColor: '#0288d1',
+                    backgroundColor: 'rgba(2,136,209,0.08)',
                     tension: 0.4,
-                    fill: true
+                    fill: true,
+                    pointBackgroundColor: '#0288d1',
+                    pointRadius: 4,
+                    borderWidth: 2.5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false } }
                 }
             }
         });
@@ -289,7 +266,7 @@
         new Chart(repartitionCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Patients', 'Medecins', 'Secretaires', 'Fournisseurs', 'Admins'],
+                labels: ['Patients', 'Médecins', 'Secrétaires', 'Fournisseurs', 'Admins'],
                 datasets: [{
                     data: [
                         {{ $totalPatients }},
@@ -298,19 +275,15 @@
                         {{ $totalFournisseurs }},
                         {{ $totalAdmins }}
                     ],
-                    backgroundColor: [
-                        'rgb(59, 130, 246)',
-                        'rgb(34, 197, 94)',
-                        'rgb(168, 85, 247)',
-                        'rgb(234, 179, 8)',
-                        'rgb(239, 68, 68)'
-                    ]
+                    backgroundColor: ['#0288d1','#43a047','#8e24aa','#fb8c00','#e53935'],
+                    borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } },
+                cutout: '60%'
             }
         });
     }
@@ -325,23 +298,17 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message || 'Une erreur est survenue');
-                }
+                if (data.success) location.reload();
+                else alert(data.message || 'Une erreur est survenue');
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Erreur reseau');
-            });
+            .catch(() => alert('Erreur réseau'));
         }
     }
 
     function deleteUser(userId) {
-        if (confirm('Etes-vous sur de vouloir supprimer cet utilisateur ? Cette action est irreversible.')) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')) {
             document.getElementById(`delete-user-${userId}`).submit();
         }
     }

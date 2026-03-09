@@ -10,7 +10,10 @@ class StockMatierePremiereController extends Controller
 {
     public function index()
     {
-        $stocks = StockMatierePremiere::orderBy('nom')->get();
+        $stocks = StockMatierePremiere::with('fournisseur')
+            ->orderBy('nom')
+            ->paginate(20)
+            ->withQueryString();
         return view('stock.index', compact('stocks'));
     }
 
@@ -21,10 +24,12 @@ class StockMatierePremiereController extends Controller
 
     public function store(Request $request)
     {
+        $this->prepareNumericFields($request);
+
         $request->validate([
             'nom' => 'required|string|max:255',
-            'quantite' => 'required|integer|min:0',
-            'seuil_alerte' => 'required|integer|min:0',
+            'quantite' => 'required|numeric|min:0',
+            'seuil_alerte' => 'required|numeric|min:0',
             'unite' => 'nullable|string|max:50',
             'fournisseur' => 'nullable|string|max:255',
             'prix_unitaire' => 'nullable|numeric|min:0',
@@ -52,10 +57,12 @@ class StockMatierePremiereController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->prepareNumericFields($request);
+
         $request->validate([
             'nom' => 'required|string|max:255',
-            'quantite' => 'required|integer|min:0',
-            'seuil_alerte' => 'required|integer|min:0',
+            'quantite' => 'required|numeric|min:0',
+            'seuil_alerte' => 'required|numeric|min:0',
             'unite' => 'nullable|string|max:50',
             'fournisseur' => 'nullable|string|max:255',
             'prix_unitaire' => 'nullable|numeric|min:0',
@@ -76,5 +83,17 @@ class StockMatierePremiereController extends Controller
         $stock->delete();
 
         return redirect()->route('stock.index')->with('success', 'Materiel supprime avec succes!');
+    }
+
+    private function prepareNumericFields(Request $request)
+    {
+        $fields = ['quantite', 'seuil_alerte', 'prix_unitaire'];
+        foreach ($fields as $field) {
+            if ($request->has($field) && is_string($request->$field)) {
+                $request->merge([
+                    $field => str_replace(',', '.', $request->$field)
+                ]);
+            }
+        }
     }
 }

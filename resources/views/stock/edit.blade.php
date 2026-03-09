@@ -261,7 +261,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="prix_unitaire" class="form-label">Prix unitaire (€)</label>
+                    <label for="prix_unitaire" class="form-label">Prix unitaire (DT)</label>
                     <input type="number" class="form-control" id="prix_unitaire" name="prix_unitaire" 
                            value="{{ old('prix_unitaire', $stock->prix_unitaire) }}" min="0" step="0.01">
                     <div class="form-text">Prix d'achat unitaire</div>
@@ -289,7 +289,7 @@
 
                 <div style="text-align: center; margin-top: 2rem;">
                     <button type="submit" class="btn-primary">
-                        ðŸ’¾ Mettre à jour le stock
+                        Mettre à jour
                     </button>
                 </div>
             </form>

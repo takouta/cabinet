@@ -21,6 +21,9 @@ class RendezVous extends Model
         'statut',
         'notes',
         'motif',
+        'observations',
+        'diagnostic',
+        'traitement_effectue',
     ];
 
     protected $casts = [

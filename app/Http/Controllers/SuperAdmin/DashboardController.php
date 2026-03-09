@@ -48,11 +48,17 @@ class DashboardController extends Controller
         $evolution = Cache::remember('super_admin_user_evolution', 3600, function () {
             $labels = [];
             $data = [];
+            $startDate = now()->subDays(29)->startOfDay();
+
+            $raw = User::selectRaw('DATE(created_at) as day, COUNT(*) as total')
+                ->where('created_at', '>=', $startDate)
+                ->groupBy('day')
+                ->pluck('total', 'day');
 
             for ($i = 29; $i >= 0; $i--) {
                 $date = now()->subDays($i);
                 $labels[] = $date->format('d/m');
-                $data[] = User::whereDate('created_at', $date)->count();
+                $data[] = (int) ($raw[$date->toDateString()] ?? 0);
             }
 
             return compact('labels', 'data');
@@ -60,8 +66,12 @@ class DashboardController extends Controller
 
         $recentUsers = User::latest()->limit(10)->get();
 
-        $recentActivities = AuditLog::latest()->limit(8)->get()->map(function ($log) {
-            $user = User::find($log->user_id);
+        $recentActivities = AuditLog::latest()
+            ->limit(8)
+            ->get()
+            ->loadMissing('user')
+            ->map(function ($log) {
+            $user = $log->user;
 
             return (object) [
                 'description' => $log->action ?? 'Activite',

@@ -24,4 +24,21 @@ class Fournisseur extends Model
     {
         return $this->hasMany(StockMatierePremiere::class);
     }
+
+    public function produits()
+    {
+        return $this->hasMany(ProduitFournisseur::class);
+    }
+
+    public function cabinets()
+    {
+        return $this->belongsToMany(\App\Models\Cabinet::class, 'cabinet_fournisseur', 'fournisseur_id', 'cabinet_id')
+                    ->withPivot(['date_debut', 'notes'])
+                    ->withTimestamps();
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(FactureFournisseur::class);
+    }
 }

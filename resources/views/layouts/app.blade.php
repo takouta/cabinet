@@ -98,13 +98,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('patients*') ? 'active' : '' }}" href="{{ url('/patients') }}">
-                                <i class="fas fa-user-injured"></i> Patients
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link {{ request()->is('rendezvous*') ? 'active' : '' }}" href="{{ url('/rendezvous') }}">
                                 <i class="fas fa-calendar-check"></i> Rendez-vous
+                            </a>
+                        </li>
+                        @if(Auth::check() && Auth::user()->role !== 'patient')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('patients*') ? 'active' : '' }}" href="{{ url('/patients') }}">
+                                <i class="fas fa-user-injured"></i> Patients
                             </a>
                         </li>
                         <li class="nav-item">
@@ -122,6 +123,7 @@
                                 <i class="fas fa-sms"></i> SMS
                             </a>
                         </li>
+                        @endif
                         @if(Auth::check() && in_array(Auth::user()->role, ['medecin', 'dentiste', 'super_admin']))
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('medecin/cnam*') ? 'active' : '' }}" href="{{ route('cnam.index') }}">

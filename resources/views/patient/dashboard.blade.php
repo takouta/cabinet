@@ -251,6 +251,8 @@
     </div>
 </div>
 
+@if($patient)
+
 {{-- Stats --}}
 <div class="stat-cards">
     <div class="stat-card">
@@ -360,5 +362,6 @@
         </a>
     </div>
 </div>
+@endif
 @endif
 @endsection

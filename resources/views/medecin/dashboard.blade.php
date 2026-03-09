@@ -78,12 +78,20 @@
 </style>
 
 {{-- Bannière de bienvenue --}}
-<div class="welcome-banner">
-    <div class="icon-wrap"><i class="fas fa-user-md"></i></div>
-    <div>
-        <h4>Bienvenue Dr. {{ Auth::user()->name }}</h4>
-        <p>Bonne journée de consultation — {{ now()->translatedFormat('l d F Y') }}</p>
+<div class="welcome-banner flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <div class="icon-wrap"><i class="fas fa-user-md"></i></div>
+        <div>
+            <h4>Bienvenue Dr. {{ Auth::user()->name }}</h4>
+            <p>Bonne journée de consultation — {{ now()->translatedFormat('l d F Y') }}</p>
+        </div>
     </div>
+    @if(Route::has('medecin.cnam.daily-pdf'))
+    <a href="{{ route('medecin.cnam.daily-pdf') }}" target="_blank" class="px-4 py-2 bg-white/20 hover:bg-white/30 border border-white/40 rounded-lg text-white text-sm font-semibold transition-all flex items-center gap-2">
+        <i class="fas fa-file-pdf"></i>
+        Bordereau PDF (Fin de journée)
+    </a>
+    @endif
 </div>
 
 {{-- Stats --}}

@@ -10,9 +10,15 @@
             <p class="text-sm text-gray-500">Gestion des transmissions et remboursements CNAM.</p>
         </div>
         @php
-            $currentPrefix = str_contains(request()->route()->getName(), 'admin') ? 'admin.' : (str_contains(request()->route()->getName(), 'medecin') ? 'medecin.' : '');
+            $routeName = optional(request()->route())->getName() ?? '';
+            $currentPrefix = str_contains($routeName, 'admin') ? 'admin.' : (str_contains($routeName, 'medecin') ? 'medecin.' : '');
         @endphp
+        
+        @if(auth()->check() && in_array(auth()->user()->role, ['medecin', 'dentiste', 'admin_cabinet']))
         <div class="flex gap-3">
+            <a href="{{ route($currentPrefix . 'cnam.daily-pdf') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition-colors">
+                <i class="fas fa-file-pdf mr-2"></i>Bordereau Journalier
+            </a>
             <a href="{{ route($currentPrefix . 'cnam.soins.create') }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition-colors">
                 <i class="fas fa-file-medical mr-2"></i>Saisir nouveau BS
             </a>
@@ -20,6 +26,7 @@
                 <i class="fas fa-plus mr-2"></i>Générer Bordereau
             </a>
         </div>
+        @endif
     </div>
 
     <div class="bg-white rounded-xl shadow overflow-hidden">
@@ -68,7 +75,12 @@
                                     </button>
                                 </form>
                             @endif
-                            <button class="text-gray-400 hover:text-gray-600 transition-colors">
+{{-- 
+                            <a href="{{ route($currentPrefix . 'cnam.pdf', $bordereau->id) }}" target="_blank" class="text-gray-400 hover:text-red-600 transition-colors" title="Télécharger PDF">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+--}}
+                            <button class="text-gray-400 hover:text-gray-600 transition-colors" title="Voir détails">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>

@@ -148,9 +148,10 @@ Route::middleware(['auth'])->group(function () {
     // ===========================================
     // ADMIN CABINET
     // ===========================================
-    Route::middleware(['role:admin_cabinet'])->prefix('admin')->group(function () {
-        
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    // ===========================================
+    // ROUTES PARTAGÉES (ADMIN, MEDECIN, SECRETAIRE)
+    // ===========================================
+    Route::middleware(['role:admin_cabinet,medecin,secretaire'])->group(function () {
         
         // Inclusion des modules (avec vérification d'existence)
         $moduleFiles = [
@@ -162,26 +163,42 @@ Route::middleware(['auth'])->group(function () {
         
         foreach ($moduleFiles as $module => $path) {
             if (file_exists($path)) {
+                // Define base routes (e.g., patients.index)
+                require $path;
+                
+                // Also define prefixed routes for compatibility (e.g., admin.patients.index)
+                // This prevents "Route not defined" errors when switching between themes
                 if (in_array($module, ['patient', 'rendezvous', 'cnam'])) {
                     Route::name('admin.')->group(function() use ($path) {
                         require $path;
                     });
-                } else {
-                    require $path;
                 }
             }
         }
         
-        // Fournisseurs
-        Route::resource('fournisseurs', FournisseurController::class);
+        // Consultations
+        Route::get('/consultations/{consultation}/completer', [ConsultationController::class, 'completerConsultation'])->name('consultations.completer');
+        Route::post('/consultations/{consultation}/completer', [ConsultationController::class, 'storeCompletement'])->name('consultations.store-completement');
+        Route::resource('consultations', ConsultationController::class);
+        
+        // Fournisseurs (Admin seulement généralement, mais on peut les mettre ici si besoin)
+        Route::resource('fournisseurs', FournisseurController::class)->middleware('role:admin_cabinet');
         
         // SMS
         Route::resource('sms', SmsController::class)->except(['create', 'edit']);
         Route::post('/sms/send-rappel-rdv', [SmsController::class, 'sendRappelRdv'])->name('sms.send-rappel-rdv');
         Route::post('/sms/send-alerte-stock', [SmsController::class, 'sendAlerteStock'])->name('sms.send-alerte-stock');
+
+        // Patients (Route spécifique si nécessaire en plus du resource)
+        // Route::get('/patients', [App\Http\Controllers\Admin\PatientController::class, 'index'])->name('patients.index');
+    });
+
+    // ===========================================
+    // ADMIN CABINET UNIQUEMENT
+    // ===========================================
+    Route::middleware(['role:admin_cabinet'])->prefix('admin')->group(function () {
         
-        // Consultations
-        Route::resource('consultations', ConsultationController::class);
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         
         // Gestion utilisateurs (pour admin cabinet)
         Route::prefix('users')->name('admin.users.')->group(function () {
@@ -236,7 +253,17 @@ Route::middleware(['auth'])->group(function () {
     // FOURNISSEUR
     // ===========================================
     Route::middleware(['role:fournisseur'])->prefix('fournisseur')->name('fournisseur.')->group(function () {
-        Route::get('/dashboard', [FournisseurDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Fournisseur\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Gestion des produits du catalogue
+        Route::get('/produits/create', [\App\Http\Controllers\Fournisseur\ProduitController::class, 'create'])->name('produits.create');
+        Route::post('/produits', [\App\Http\Controllers\Fournisseur\ProduitController::class, 'store'])->name('produits.store');
+
+        // Gestion des factures
+        Route::get('/factures', [\App\Http\Controllers\Fournisseur\FactureController::class, 'index'])->name('factures.index');
+        Route::get('/factures/create', [\App\Http\Controllers\Fournisseur\FactureController::class, 'create'])->name('factures.create');
+        Route::post('/factures', [\App\Http\Controllers\Fournisseur\FactureController::class, 'store'])->name('factures.store');
+        Route::get('/factures/{id}/pdf', [\App\Http\Controllers\Fournisseur\FactureController::class, 'generatePdf'])->name('factures.pdf');
     });
     
     // ===========================================

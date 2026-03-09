@@ -12,20 +12,52 @@ class RendezVousController extends Controller
 {
     public function index()
     {
-        $rendezvous = RendezVous::with('patient')->orderBy('date_heure', 'desc')->get();
+        $query = RendezVous::with('patient')->orderBy('date_heure', 'desc');
+        
+        $user = Auth::user();
+        if ($user && $user->role === 'patient') {
+            $patient = \App\Modules\Patient\Models\Patient::where('user_id', $user->id)->first();
+            if ($patient) {
+                $query->where('patient_id', $patient->id);
+            } else {
+                $query->where('id', -1); // Aucune donnée
+            }
+        }
+        
+        $rendezvous = $query->paginate(20)->withQueryString();
         $routePrefix = $this->getRoutePrefix();
         return view('rendezvous.index', compact('rendezvous', 'routePrefix'));
     }
 
     public function create()
     {
-        $patients = Patient::orderBy('nom')->get();
+        $user = Auth::user();
+        if ($user && $user->role === 'patient') {
+            $patient = \App\Modules\Patient\Models\Patient::where('user_id', $user->id)->first();
+            if (!$patient) {
+                return redirect()->route('patient.dashboard')->with('error', 'Votre profil patient n\'est pas encore associé. Vous ne pouvez pas prendre de rendez-vous.');
+            }
+            $patients = collect([$patient]);
+        } else {
+            $patients = Patient::orderBy('nom')->get();
+        }
+
         $routePrefix = $this->getRoutePrefix();
         return view('rendezvous.create', compact('patients', 'routePrefix'));
     }
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+        if ($user && $user->role === 'patient') {
+            $patient = \App\Modules\Patient\Models\Patient::where('user_id', $user->id)->first();
+            if (!$patient) {
+                return redirect()->route('patient.dashboard')->with('error', 'Votre profil patient n\'est pas encore associé.');
+            }
+            // Forcer le patient_id pour la sécurité
+            $request->merge(['patient_id' => $patient->id]);
+        }
+
         $validated = $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'date_heure' => 'required|date',
@@ -49,13 +81,32 @@ class RendezVousController extends Controller
 
     public function edit(RendezVous $rendezvous)
     {
-        $patients = Patient::orderBy('nom')->get();
+        $user = Auth::user();
+        if ($user && $user->role === 'patient') {
+            $patient = \App\Modules\Patient\Models\Patient::where('user_id', $user->id)->first();
+            if (!$patient || $rendezvous->patient_id !== $patient->id) {
+                return redirect()->route('patient.dashboard')->with('error', 'Accès non autorisé.');
+            }
+            $patients = collect([$patient]);
+        } else {
+            $patients = Patient::orderBy('nom')->get();
+        }
+
         $routePrefix = $this->getRoutePrefix();
         return view('rendezvous.edit', compact('rendezvous', 'patients', 'routePrefix'));
     }
 
     public function update(Request $request, RendezVous $rendezvous)
     {
+        $user = Auth::user();
+        if ($user && $user->role === 'patient') {
+            $patient = \App\Modules\Patient\Models\Patient::where('user_id', $user->id)->first();
+            if (!$patient || $rendezvous->patient_id !== $patient->id) {
+                return redirect()->route('patient.dashboard')->with('error', 'Accès non autorisé.');
+            }
+            $request->merge(['patient_id' => $patient->id]);
+        }
+
         $validated = $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'date_heure' => 'required|date',
@@ -71,6 +122,14 @@ class RendezVousController extends Controller
 
     public function destroy(RendezVous $rendezvous)
     {
+        $user = Auth::user();
+        if ($user && $user->role === 'patient') {
+            $patient = \App\Modules\Patient\Models\Patient::where('user_id', $user->id)->first();
+            if (!$patient || $rendezvous->patient_id !== $patient->id) {
+                return redirect()->route('patient.dashboard')->with('error', 'Accès non autorisé.');
+            }
+        }
+
         $prefix = $this->getRoutePrefix();
         $rendezvous->delete();
 

@@ -58,6 +58,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-3">
+                {{ $patients->links() }}
+            </div>
         @else
             <div class="alert alert-info">
                 <i class="fas fa-info-circle me-2"></i>

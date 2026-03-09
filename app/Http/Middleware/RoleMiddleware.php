@@ -15,8 +15,20 @@ class RoleMiddleware
         }
 
         $user = Auth::user();
+        $userRole = trim($user->role);
+        
+        // Handle cases where roles might be passed as a single comma-separated string
+        $allowedRoles = [];
+        foreach ($roles as $role) {
+            if (str_contains($role, ',')) {
+                $allowedRoles = array_merge($allowedRoles, explode(',', $role));
+            } else {
+                $allowedRoles[] = $role;
+            }
+        }
+        $allowedRoles = array_map('trim', $allowedRoles);
 
-        if (!in_array($user->role, $roles, true)) {
+        if (!in_array($userRole, $allowedRoles, true)) {
             $roleToRoute = [
                 'super_admin' => 'super_admin.dashboard',
                 'admin_cabinet' => 'admin.dashboard',

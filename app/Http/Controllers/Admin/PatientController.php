@@ -78,7 +78,7 @@ class PatientController extends Controller
             'telephone' => $request->telephone,
         ]);
 
-        return redirect()->route('admin.patients.index')
+        return redirect()->route($this->getRoutePrefix() . 'patients.index')
             ->with('success', 'Patient créé avec succès');
     }
 
@@ -135,7 +135,7 @@ class PatientController extends Controller
             'mutuelle' => $request->mutuelle,
         ]);
 
-        return redirect()->route('admin.patients.index')
+        return redirect()->route($this->getRoutePrefix() . 'patients.index')
             ->with('success', 'Patient mis à jour avec succès');
     }
 
@@ -153,7 +153,7 @@ class PatientController extends Controller
         // Ou supprimer aussi l'utilisateur
         User::where('id', $userId)->delete();
 
-        return redirect()->route('admin.patients.index')
+        return redirect()->route($this->getRoutePrefix() . 'patients.index')
             ->with('success', 'Patient supprimé avec succès');
     }
 
@@ -187,5 +187,11 @@ class PatientController extends Controller
             'success' => true,
             'actif' => $user->actif
         ]);
+    }
+
+    protected function getRoutePrefix()
+    {
+        $routeName = optional(request()->route())->getName() ?? '';
+        return str_contains($routeName, 'admin') ? 'admin.' : '';
     }
 }

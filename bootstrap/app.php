@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'dentiste' => \App\Http\Middleware\CheckDentiste::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            '/login',
+            '/register',
+            '/patient/register',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

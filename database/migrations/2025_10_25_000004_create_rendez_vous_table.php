@@ -13,7 +13,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->foreignId('dentiste_id')->constrained('users')->onDelete('cascade');
-            $table->datetime('date_heure');
+            $table->datetime('date_heure')->index();
             $table->string('type_consultation');
             $table->enum('statut', ['planifié', 'confirmé', 'annulé', 'terminé'])->default('planifié');
             $table->text('notes')->nullable();
